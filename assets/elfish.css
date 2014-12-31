@@ -1,0 +1,34 @@
+html, body { 
+    background-color: rgb(48,48,48);
+    color: #fff;
+}
+
+input,button {
+    background-color: rgb(48,48,48);
+    color: #fff;
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 18px;
+    appearance: none;
+    box-shadow: none;
+    border-radius: none;
+    
+    border: solid 2px #c9c9c9;
+}
+
+input:focus,button:focus {
+    border: solid 1px #37f;
+}
+
+table { border-top: 2px solid rgb(71, 71, 71); }
+
+
+.group h1 {
+    float:left;
+}
+
+.effort {
+    display: inline-block;
+    padding: 1em;
+}
+

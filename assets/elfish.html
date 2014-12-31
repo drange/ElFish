@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" type="text/css" href="elfish.css">
+    
+    <script src="scripts/jquery-2.0.0.min.js"></script>
+    <script src="scripts/underscore-min.js"></script>
+    <script src="scripts/handlebars.min.js"></script>
+    <script src="scripts/loadfromtemplate.min.js"></script>
+    
+    <!-- JavaScript / Android bindings --> 
+    
+
+
+    <script type="text/javascript">
+      function toAndroidClipboard(msg) { 
+	  Android.toClipboard(msg);
+	  showAndroidToast("Copied CSV to clipboard");
+      }
+
+      function showAndroidToast(toast) { Android.showToast(toast); }
+      
+      window.onload = function () {
+	  var groups = 3;
+	  var efforts = 4;
+	  
+	  for (var i = 1; i <= groups; i++) {
+	      $(".app:first").loadFromTemplate({
+		  template:$("#template-group").html(), 
+		  data: {
+		      group: {
+			  id: i,
+			  title: "Group"
+		      }
+		  }
+	      })
+	  }
+	  
+	  for (var j = 1; j <= groups; j++) {
+	      for (var i = 1; i <= efforts; i++) {
+		  $("[data-id=group-"+j+"]").loadFromTemplate({
+		      template:$("#template-effort").html(), 
+		      data: {
+			  effort: {
+			      id: i,
+			      title: "g"+j+ " Effort",
+			      est: "----",
+			      ke: "----",
+			      te: "----"
+			  }
+		      }
+		  })
+	      }
+	  }
+      }
+    </script>
+
+
+    <script type="text/html" id="template-group"><div class="group" data-id="group-{{group.id}}"><h1>{{group.title}} {{group.id}}</h1></div></script>
+
+    <script type="text/html" id="template-effort"><div class="effort" id="effort-{{effort.id}}"><h2>{{effort.title}} {{effort.id}}</h2><input type="number" class="catch-input" /><div class="estimate">{{effort.est}}</div><div class="ke">{{effort.ke}}</div><div class="te">{{effort.te}}</div></div></script>
+    
+  </head>
+  <body>
+    <div class="app">
+    <strong>Species 1</strong>
+    <strong><button>+</button></strong>
+
+    </div>
+    
+    <!-- / JavaScript / Android bindings --> 
+    
+    <input type="button" value="Copy to clipboard"
+	   onClick="toAndroidClipboard(',Effort
+		    1,Effort2,Effort3\nCat1,120,90,70\n')" />
+
+    <script>
+    $( ".app" )
+    .delegate(".catch-input", "change", function (eventObject) {	
+	var val = eventObject.target.value;
+	val = parseInt(val);
+	console.log(val);
+    });
+    </script>
+        
+    
+  </body>
+</html>
