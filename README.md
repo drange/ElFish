@@ -3,4 +3,4 @@ ElFish
 
 ElFish
 
-A Marius app (c)
+A Marius app (c), developed by Sessility.
