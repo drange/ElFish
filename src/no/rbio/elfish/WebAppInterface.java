@@ -3,17 +3,19 @@ package no.rbio.elfish;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
 public class WebAppInterface {
-	Context mContext;
+	private final Context mContext;
 
 	/** Instantiate the interface and set the context */
-	WebAppInterface(Context c) {
+	public WebAppInterface(Context c) {
 		mContext = c;
 	}
 
+	@JavascriptInterface
 	public void toClipboard(String s) {
 		ClipboardManager cm = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
 
@@ -21,6 +23,15 @@ public class WebAppInterface {
 		ClipData cd = ClipData.newPlainText("ElFish CSV", s);
 
 		cm.setPrimaryClip(cd);
+	}
+
+	@JavascriptInterface
+	public void share(String subject, String shareBody) {
+		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		sharingIntent.setType("text/plain");
+		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+		mContext.startActivity(Intent.createChooser(sharingIntent, "Share ElFish data with"));
 	}
 
 	/** Show a toast from the web page */

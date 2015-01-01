@@ -3,18 +3,14 @@
  *
  */
 function catchability (arr) {
-
-
-    //var ITERATIONS = 7;
-
+    
     // k = number of removals
-
     var k = arr.length;
-
+    
     // TOTAL CATCH
     var totalCatch = 0.0;
     for (var i = 0; i < k; i++) {
-       totalCatch += arr[i];
+	totalCatch += arr[i];
     }
     
     var summand = 0.0;
@@ -22,8 +18,8 @@ function catchability (arr) {
         summand += (i * arr[i]);
     }
     summand = summand / totalCatch;
-
-    // c_1 / T can be used as first guess
+    
+    // c_0 / T can be used as first guess
     var q = 1 - (arr[0] / totalCatch);
     
     console.log("init q = " + q);
@@ -56,7 +52,6 @@ function catchability (arr) {
 function estimate (arr) {
     
     // k = number of removals
-
     var k = arr.length;
     
     // TOTAL CATCH
@@ -70,8 +65,36 @@ function estimate (arr) {
 }
 
 
+/**
+ * Computes confidence interval
+ */
+function confidence (arr, areal) {
+    // k = number of removals
+    var k = arr.length;
+    
+    // TOTAL CATCH
+    var totalCatch = 0.0;
+    for (var i = 0; i < k; i++) {
+	totalCatch += arr[i];
+    }
+    
+    q = catchability(arr);
+    
+    var qk = Math.pow(q,k);
+    
+    var CR4 = totalCatch / (1-Math.pow(q,k));
+    var CS4 = CR4 * (1-(qk)*qk) / (   Math.pow(1-qk,2)   - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
+    
+    var CT4 = Math.sqrt(CS4);
+    
+    var CU4 = 1.95 * CT4;
+    
+    return CU4/areal * 100
+}
+
+
 function showAndroidToast(toast) {
-    //Android.showToast(toast);
+    // Android.showToast(toast);
 }
 
 function run () {
@@ -89,12 +112,16 @@ function run () {
         var i11 = parseInt(c11);
         var i12 = parseInt(c12);
         var i13 = parseInt(c13);
-
-        var q = estimate([i11,i12,i13]);
+	
+	var arr = [i11,i12,i13];
+	
+        var q = estimate(arr);
         var t = i11+i12+i13;
-
-        document.getElementById("est-1-3").innerHTML = "EST = " + q.toFixed(2);
-        document.getElementById("ke-1-3").innerHTML = "k/E = " + t;
+	
+	var cf = confidence(arr, 100);
+	
+        document.getElementById("est-1-3").innerHTML = "EST = " + q.toFixed(2) + " &pm; " + cf.toFixed(2); // areal = 100
+        document.getElementById("ke-1-3").innerHTML = "k/E = " + (cf/q).toFixed(2);
         document.getElementById("te-1-3").innerHTML = "T/E = " + (t/q).toFixed(2);
     }
     });

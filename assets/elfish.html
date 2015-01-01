@@ -15,16 +15,55 @@
     <!-- JavaScript / Android bindings -->
 
     <script type="text/javascript">
-      //function estimate(msg) {
-      //Android.toClipboard(msg);
-      //showAndroidToast("Copied CSV to clipboard");
-      //}
+      // function estimate(msg) {
+      //     Android.toClipboard(msg);
+      //     showAndroidToast("Copied CSV to clipboard");
+      // }
     </script>
 
-    <script type="text/html" id="template-group"><div class="group" data-id="group-{{group.id}}"><h1>{{group.title}} {{group.id}}</h1></div></script>
+    <script type="text/javascript">
+      function androidShare() {
+	  var c11 = document.getElementById("ci-1-1").value;
+          var c12 = document.getElementById("ci-1-2").value;
+          var c13 = document.getElementById("ci-1-3").value;
 
-    <script type="text/html" id="template-effort"><div class="effort" id="effort-{{effort.id}}"><h2>{{effort.title}} {{effort.id}}</h2><input type="number" min="0" class="catch-input" id="ci-{{effort.groupid}}-{{effort.id}}" /><div class="estimate" id="est-{{effort.groupid}}-{{effort.id}}">{{effort.est}}</div><div class="ke" id="ke-{{effort.groupid}}-{{effort.id}}">{{effort.ke}}</div><div class="te" id="te-{{effort.groupid}}-{{effort.id}}">{{effort.te}}</div></div></script>
+	  var est = document.getElementById("est-1-3").innerHTML;
+          var ke = document.getElementById("ke-1-3").innerHTML;
+          var te = document.getElementById("te-1-3").innerHTML;
+	  
+	  var subject = "ElFish data";
+	  var body = "Data: " + c11 + "," + c12 + "," + c13 + "\n" + est + "\n" + ke + "\n" + te;
+	  
+	  console.log("SHARING");
+	  console.log(subject);
+	  console.log(body);
+	  
+	  Android.share(subject, body);
+      }
+    </script>
 
+    <script type="text/html" id="template-group">
+      <div class="group" data-id="group-{{group.id}}">
+	<h1>{{group.title}} {{group.id}}</h1>
+      </div>
+    </script>
+    
+    <script type="text/html" id="template-effort">
+      <div class="effort" id="effort-{{effort.id}}">
+	<h2>{{effort.title}} {{effort.id}}</h2>
+	<input type="number" min="0" class="catch-input" id="ci-{{effort.groupid}}-{{effort.id}}" />
+	<div class="estimate" id="est-{{effort.groupid}}-{{effort.id}}">
+	  {{effort.est}}
+	</div>
+	<div class="ke" id="ke-{{effort.groupid}}-{{effort.id}}">
+	  {{effort.ke}}
+	</div>
+	<div class="te" id="te-{{effort.groupid}}-{{effort.id}}">
+	  {{effort.te}}
+	</div>
+      </div>
+    </script>
+    
   </head>
   <body>
     <div class="app">
@@ -39,6 +78,8 @@
 	   onClick="toAndroidClipboard(',Effort
 		    1,Effort2,Effort3\nCat1,120,90,70\n')" />
 
-
+    <input type="button" value="Share"
+	   onClick="androidShare()" />
+    
   </body>
 </html>
