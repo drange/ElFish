@@ -1,5 +1,11 @@
-function est (arr) {
-    var ITERATIONS = 7;
+/**
+ * Computes the catchability q = 1-p.
+ *
+ */
+function catchability (arr) {
+
+
+    //var ITERATIONS = 7;
 
     // k = number of removals
 
@@ -10,36 +16,62 @@ function est (arr) {
     for (var i = 0; i < k; i++) {
        totalCatch += arr[i];
     }
-
+    
     var summand = 0.0;
-    for (var i = 1; i <= k; i++) {
-        summand += (i * arr[i-1]);
+    for (var i = 1; i < k; i++) {
+        summand += (i * arr[i]);
     }
     summand = summand / totalCatch;
 
     // c_1 / T can be used as first guess
-    var q = arr[0] / totalCatch;
-
-    for (var i = 1; i <= ITERATIONS; i++) {
-        q = iterate(summand, q, i);
-    }
-
+    var q = 1 - (arr[0] / totalCatch);
+    
+    console.log("init q = " + q);
+    
+    var sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
+    var qinv = 1 - q;
+    q = (summand + sumtwo) * qinv;
     console.log("q = " + q);
-
+    
+    for (var i = 0; i < 100; i++) {
+	var oldq=q;
+	sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
+	qinv = 1 - q;
+	q = (summand + sumtwo) * qinv;
+	console.log("q" + i + " = " + q);
+	if (Math.abs(oldq-q) < 0.00001) {
+	    return q;
+	}
+    }
+    console.warn("Unstable q");
     return q;
 }
 
-function iterate (summand, q, k) {
-    console.log("iterate(" + summand + ", " + q + ", " + k + ")");
-    var kqk = k * Math.pow(q, k);
-    kqk /= (1 - Math.pow(q, k));
+/**
+ * Computes T / (1 - q^k)
+ * where T = totalCatch (BB4)
+ * k = num catch (AG4)
+ * q = (1-p) (BV4)
+ */
+function estimate (arr) {
+    
+    // k = number of removals
 
-    console.log("\tkqk " + kqk);
-    return (summand + kqk) * (1 - q);
+    var k = arr.length;
+    
+    // TOTAL CATCH
+    var totalCatch = 0.0;
+    for (var i = 0; i < k; i++) {
+	totalCatch += arr[i];
+    }
+    
+    q = catchability(arr);
+    return totalCatch / (1-Math.pow(q,k));
 }
 
+
 function showAndroidToast(toast) {
-    Android.showToast(toast);
+    //Android.showToast(toast);
 }
 
 function run () {
@@ -58,12 +90,12 @@ function run () {
         var i12 = parseInt(c12);
         var i13 = parseInt(c13);
 
-        var estim = est([i11,i12,i13]);
+        var q = estimate([i11,i12,i13]);
         var t = i11+i12+i13;
 
-        document.getElementById("est-1-3").innerHTML = "EST = " + estim.toFixed(2);
+        document.getElementById("est-1-3").innerHTML = "EST = " + q.toFixed(2);
         document.getElementById("ke-1-3").innerHTML = "k/E = " + t;
-        document.getElementById("te-1-3").innerHTML = "T/E = " + (t/estim).toFixed(2);
+        document.getElementById("te-1-3").innerHTML = "T/E = " + (t/q).toFixed(2);
     }
     });
 
@@ -105,4 +137,14 @@ $(function () {
     }
 
     run();
+    
+    var arr = [34, 46, 22, 26, 18, 16, 20, 12];
+    console.log("arr = " + arr);
+    var T = 0;
+    $.each(arr,function(){T+=parseFloat(this) || 0;});
+    
+    console.log("T = " + T);
+    console.log("catch="+catchability(arr));
+    console.log("est="+estimate(arr));
+
 })
