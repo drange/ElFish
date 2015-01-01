@@ -19,3 +19,6 @@ gen/
 res/
 
 *.min.js
+# Deps
+bower_components
+node_modules
