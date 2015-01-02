@@ -102,7 +102,7 @@ function confidence (arr, areal) {
 
     console.log("CT4 = " + CT4);
     
-    var CU4 = 1.95 * CT4;
+    var CU4 = 1.96 * CT4;
 
     console.log("CU4 = " + CU4);
     
