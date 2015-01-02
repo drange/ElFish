@@ -3,6 +3,11 @@ html, body {
     color: #fff;
 }
 
+.red {
+    color: rgb(200,96,96);
+    font-weight: bold;
+}
+
 input,button {
     background-color: rgb(48,48,48);
     color: #fff;

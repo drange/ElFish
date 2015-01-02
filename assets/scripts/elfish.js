@@ -1,9 +1,11 @@
+window.elfish = {efforts: 3, groups: 2, species: 1 };
+
 /**
  * Computes the catchability q = 1-p.
  *
  */
 function catchability (arr) {
-    
+    window.elfish.unstable = false;
     // k = number of removals
     var k = arr.length;
     
@@ -34,12 +36,13 @@ function catchability (arr) {
 	sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
 	qinv = 1 - q;
 	q = (summand + sumtwo) * qinv;
-	console.log("q" + i + " = " + q);
+	// console.log("q" + i + " = " + q);
 	if (Math.abs(oldq-q) < 0.00001) {
 	    return q;
 	}
     }
     console.warn("Unstable q");
+    window.elfish.unstable = true;    
     return q;
 }
 
@@ -97,42 +100,93 @@ function showAndroidToast(toast) {
     // Android.showToast(toast);
 }
 
+function getInputValue(sp, gr, ef) {
+    var elt = getInput(sp,gr,ef);
+    if (elt != null)
+	return elt.value;
+    return NaN;
+}
+
+function getInput(sp, gr, ef) {
+    var key = "ci-" + gr + "-" + ef;
+    return document.getElementById(key);
+}
+
+function createNewEffort(species, group, newId) {
+    $("[data-id=group-"+group+"]").loadFromTemplate({
+        template:$("#template-effort").html(),
+        data: {
+            effort: {
+                id: newId,
+                groupid: group,
+                title: "g" + group + " Effort",
+                est: "----",
+                ke: "----",
+                te: "----"
+            }
+        }
+    });
+}
+
 function run () {
     $( ".app" )
-    .delegate(".catch-input", "change", function (eventObject) {
-    var val = eventObject.target.value;
-    val = parseInt(val);
-    console.log(val);
-    if (eventObject.target.id == "ci-1-3") {
-        var c11 = document.getElementById("ci-1-1").value;
-        var c12 = document.getElementById("ci-1-2").value;
-        var c13 = document.getElementById("ci-1-3").value;
-        console.log(c11 + " " + c12 + " " + c13);
-
-        var i11 = parseInt(c11);
-        var i12 = parseInt(c12);
-        var i13 = parseInt(c13);
-	
-	var arr = [i11,i12,i13];
-	
-        var q = estimate(arr);
-        var t = i11+i12+i13;
-	
-	var cf = confidence(arr, 100);
-	
-        document.getElementById("est-1-3").innerHTML = "EST = " + q.toFixed(2) + " &pm; " + cf.toFixed(2); // areal = 100
-        document.getElementById("ke-1-3").innerHTML = "k/E = " + (cf/q).toFixed(2);
-        document.getElementById("te-1-3").innerHTML = "T/E = " + (t/q).toFixed(2);
-    }
-    });
-
+	.delegate(".catch-input", "change", function (e) {
+	    var val = e.target.value;
+	    val = parseInt(val);
+	    
+	    window.elfish[e.target.id] = val;
+	    
+	    console.log(elfish);
+	    
+	    for (var s = 1; s <= window.elfish.species; s++) {
+		for (var g = 1; g <= window.elfish.groups; g++) {
+		    
+		    var vals = [];
+	    	    for (var e = 1; e <= window.elfish.efforts; e++) {
+			vals.push(getInputValue(s,g,e));
+		    }
+		    
+		    var arr = [];
+		    var t = 0;
+		    for (var i = 0; i < vals.length; i++) {
+			var v = parseInt(vals[i],10)
+			arr.push(v);
+			t += v;
+		    }
+		    
+		    console.log(arr);
+		    if (t != t) return; // NaN
+		    
+		    
+		    
+		    var q = estimate(arr);
+		    var cf = confidence(arr, 100);
+		    var unstable = "";
+		    if (window.elfish.unstable) {
+			window.elfish.unstable = false;
+			unstable = "*";
+		    }
+		    
+		    document.getElementById("est-"+g+"-3").innerHTML = "EST = " + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; // areal = 100
+		    document.getElementById("ke-"+g+"-3").innerHTML = "k/E = " + (cf/q).toFixed(2);
+		    document.getElementById("te-"+g+"-3").innerHTML = "T/E = " + (t/q).toFixed(2);
+		    
+		    if (cf >= q) {
+			document.getElementById("est-"+g+"-3").className = "est red";
+		    } else {
+			document.getElementById("est-"+g+"-3").className = "est";
+		    }
+		}
+	    }
+	});
 }
 
 // same-ish as window.onload
 $(function () {
-    var groups = 2;
-    var efforts = 3;
-
+    var species = window.elfish.species;
+    var groups = window.elfish.groups;
+    var efforts = window.elfish.efforts;
+    
     for (var i = 1; i <= groups; i++) {
         $(".app:first").loadFromTemplate({
             template:$("#template-group").html(),
@@ -144,7 +198,7 @@ $(function () {
             }
         });
     }
-
+    
     for (var j = 1; j <= groups; j++) {
         for (var i = 1; i <= efforts; i++) {
             $("[data-id=group-"+j+"]").loadFromTemplate({
@@ -162,7 +216,7 @@ $(function () {
             });
         }
     }
-
+    
     run();
     
     var arr = [34, 46, 22, 26, 18, 16, 20, 12];
@@ -173,5 +227,5 @@ $(function () {
     console.log("T = " + T);
     console.log("catch="+catchability(arr));
     console.log("est="+estimate(arr));
-
+    
 })
