@@ -23,16 +23,17 @@
 
     <script type="text/javascript">
       function androidShare() {
-	  var c11 = document.getElementById("ci-1-1").value;
-          var c12 = document.getElementById("ci-1-2").value;
-          var c13 = document.getElementById("ci-1-3").value;
-
-	  var est = document.getElementById("est-1-3").innerHTML;
-          var ke = document.getElementById("ke-1-3").innerHTML;
-          var te = document.getElementById("te-1-3").innerHTML;
+	  var date = new Date();
 	  
-	  var subject = "ElFish data";
-	  var body = "Data: " + c11 + "," + c12 + "," + c13 + "\n" + est + "\n" + ke + "\n" + te;
+	  var datestr = date.toUTCString(); 
+	  
+	  // to use the below, add zero indexing to month and date
+	  // (1900+date.getYear()) + "-" + (1+date.getMonth()) + "-" + date.getDate();
+	  
+	  var subject = "ElFish export data " + datestr;
+	  var body = exportCSV();
+	  
+	  body += "\n\nShared to you via ElFish App, a Marius and Sessility production.";
 	  
 	  console.log("SHARING");
 	  console.log(subject);
@@ -40,6 +41,30 @@
 	  
 	  Android.share(subject, body);
       }
+
+      function androidWrite() {
+	  var filename = "elfish-";
+	  var date = new Date();
+	  filename += (1900+date.getYear());     // YEAR
+	  filename += "-";
+	  if (date.getMonth()<9) filename+="0";  // MONTH
+	  filename += (1+date.getMonth());
+	  filename += "-";
+	  if (date.getDate()<10) filename+="0";  // DATE
+	  filename += date.getDate();
+	  filename += "-";
+	  if (date.getHours()<9) filename+="0";  // HOURS
+	  filename += (1+date.getHours());
+	  filename += "-";
+	  if (date.getMinutes()<9) filename+="0";// MINUTES 
+	  filename += (1+date.getMinutes());
+	  filename += "-";
+	  if (date.getSeconds()<9) filename+="0";// SECONDS
+	  filename += (1+date.getSeconds());
+	  
+          Android.write(filename,exportCSV());
+      }
+    
     </script>
 
     <script type="text/html" id="template-group">
@@ -67,19 +92,22 @@
   </head>
   <body>
     <div class="app">
-    <strong>Species 1</strong>
-    <strong><button onClick="createNewEffort(1,1,4)">+</button></strong>
-
-    </div>
-
+      <strong>Species 1</strong>
+      <button onClick="createNewSpecies()"><strike>Add species</strike></button>
+      <button onClick="createNewGroup()">Add group</button>
+      <button onClick="createNewEffort()">Add effort</button>
+  </div>
+  
     <!-- / JavaScript / Android bindings -->
 
     <input type="button" value="Copy to clipboard"
-	   onClick="toAndroidClipboard(',Effort
-		    1,Effort2,Effort3\nCat1,120,90,70\n')" />
+	   onClick="toAndroidClipboard('todo csv')" />
 
     <input type="button" value="Share"
 	   onClick="androidShare()" />
+
+    <input type="button" value="Write to file"
+	   onClick="androidWrite()" />
     
   </body>
 </html>

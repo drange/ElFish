@@ -112,29 +112,135 @@ function getInput(sp, gr, ef) {
     return document.getElementById(key);
 }
 
-function createNewEffort(species, group, newId) {
-    $("[data-id=group-"+group+"]").loadFromTemplate({
-        template:$("#template-effort").html(),
+function createNewSpecies () {
+}
+
+function createNewGroup (specie) {
+    window.elfish.groups = window.elfish.groups + 1;
+    
+    var sp = window.elfish.species;
+    var gr = window.elfish.groups;
+    var ef = window.elfish.efforts;
+    
+    $(".app:first").loadFromTemplate({
+        template:$("#template-group").html(),
         data: {
-            effort: {
-                id: newId,
-                groupid: group,
-                title: "g" + group + " Effort",
-                est: "----",
-                ke: "----",
-                te: "----"
+            group: {
+                id: gr,
+                title: "Group"
             }
         }
     });
+    for (var e = 0; e < ef; e++) {
+	$("[data-id=group-"+gr+"]").loadFromTemplate({
+	    template:$("#template-effort").html(),
+	    data: {
+		effort: {
+		    id: e+1,
+		    groupid: gr,
+		    title: "g" + gr + " Effort",
+		    est: "----",
+		    ke: "----",
+		    te: "----"
+		}
+	    }
+	});
+    }    
 }
+
+
+function createNewEffort () {
+    window.elfish.efforts = window.elfish.efforts + 1;
+    
+    var sp = window.elfish.species;
+    var gr = window.elfish.groups;
+    var ef = window.elfish.efforts;
+    
+    for (var s = 0; s < sp; s++) {
+	for (var g = 0; g < gr; g++) {
+	    $("[data-id=group-"+(g+1)+"]").loadFromTemplate({
+		template:$("#template-effort").html(),
+		data: {
+		    effort: {
+			id: ef,
+			groupid: g+1,
+			title: "g" + (g+1) + " Effort",
+			est: "----",
+			ke: "----",
+			te: "----"
+		    }
+		}
+	    });
+	}
+    }
+}
+
+
+
+function exportCSV () {
+    var csv = "";
+    for (var s = 0; s < window.elfish.species; s++) {
+	csv += "Species " + (1+s);
+	for (var g = 0; g < window.elfish.groups; g++) {
+	    
+	    // INPUT
+	    csv += "\nGroup " + (g+1);
+	    for (var e = 0; e < window.elfish.efforts; e++) {
+		csv += "," + getInputValue(s+1,g+1,e+1);
+	    }
+	    
+	    // EST
+	    csv += "\n";
+	    for (var e = 0; e < window.elfish.efforts; e++) {
+		if (e < 2)
+		    csv += ",---";
+		else
+		    csv += "," + document.getElementById("est-"+(g+1)+"-"+(e+1)).innerHTML;
+	    }
+	    
+	    // k/E
+	    csv += "\n";
+	    for (var e = 0; e < window.elfish.efforts; e++) {
+		if (e < 2)
+		    csv += ",---";
+		else
+		    csv += "," + document.getElementById("ke-"+(g+1)+"-"+(e+1)).innerHTML;
+	    }
+	    
+	    // T/E
+	    csv += "\n";
+	    for (var e = 0; e < window.elfish.efforts; e++) {
+		if (e < 2)
+		    csv += ",---";
+		else
+		    csv += "," + document.getElementById("te-"+(g+1)+"-"+(e+1)).innerHTML;
+	    }
+	    
+	    
+	    
+	    
+	}
+	csv += "\n";
+    }
+    
+    // TODO add also EST,k/E,T/E data
+    // var est = document.getElementById("est-1-3").innerHTML;
+    // var ke = document.getElementById("ke-1-3").innerHTML;
+    // var te = document.getElementById("te-1-3").innerHTML;
+    
+
+    return csv;
+}
+
+
 
 function run () {
     $( ".app" )
-	.delegate(".catch-input", "change", function (e) {
-	    var val = e.target.value;
+	.delegate(".catch-input", "change", function (evtObj) {
+	    var val = evtObj.target.value;
 	    val = parseInt(val);
 	    
-	    window.elfish[e.target.id] = val;
+	    window.elfish[evtObj.target.id] = val;
 	    
 	    console.log(elfish);
 	    
@@ -144,43 +250,51 @@ function run () {
 		    var vals = [];
 	    	    for (var e = 1; e <= window.elfish.efforts; e++) {
 			vals.push(getInputValue(s,g,e));
-		    }
+			
+			if (e >= 3) {
+			    
+			    var arr = [];
+			    var t = 0;
+			    for (var i = 0; i < vals.length; i++) {
+				var v = parseInt(vals[i],10)
+				arr.push(v);
+				t += v;
+			    }
 		    
-		    var arr = [];
-		    var t = 0;
-		    for (var i = 0; i < vals.length; i++) {
-			var v = parseInt(vals[i],10)
-			arr.push(v);
-			t += v;
-		    }
-		    
-		    console.log(arr);
-		    if (t != t) return; // NaN
-		    
-		    
-		    
-		    var q = estimate(arr);
-		    var cf = confidence(arr, 100);
-		    var unstable = "";
-		    if (window.elfish.unstable) {
-			window.elfish.unstable = false;
-			unstable = "*";
-		    }
-		    
-		    document.getElementById("est-"+g+"-3").innerHTML = "EST = " + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; // areal = 100
-		    document.getElementById("ke-"+g+"-3").innerHTML = "k/E = " + (cf/q).toFixed(2);
-		    document.getElementById("te-"+g+"-3").innerHTML = "T/E = " + (t/q).toFixed(2);
-		    
-		    if (cf >= q) {
-			document.getElementById("est-"+g+"-3").className = "est red";
-		    } else {
-			document.getElementById("est-"+g+"-3").className = "est";
+			    console.log(arr);
+			    if (t != t) return; // NaN
+			    
+			    
+			    
+			    var q = estimate(arr);
+			    var cf = confidence(arr, 100);
+			    var unstable = "";
+			    if (window.elfish.unstable) {
+				window.elfish.unstable = false;
+				unstable = "*";
+			    }
+			    
+			    document.getElementById("est-"+g+"-" + e).innerHTML =
+				"EST =" + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; 
+			    
+			    document.getElementById("ke-"+g+"-" + e).innerHTML = 
+				"k/E =" + (cf/q).toFixed(2);
+			    
+			    document.getElementById("te-"+g+"-" + e).innerHTML = 
+				"T/E =" + (t/q).toFixed(2);
+			    
+			    if (cf >= q) {
+				document.getElementById("est-"+g+"-" + e).className = "est red";
+			    } else {
+				document.getElementById("est-"+g+"-" + e).className = "est";
+			    }
+			}
 		    }
 		}
 	    }
 	});
 }
-
+    
 // same-ish as window.onload
 $(function () {
     var species = window.elfish.species;
