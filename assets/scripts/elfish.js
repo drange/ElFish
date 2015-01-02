@@ -250,6 +250,32 @@ function exportCSV () {
 
 function run () {
     $( ".app" )
+	.delegate(".editable", "click", function (evtObj) {
+	    console.log("Clicked editable");
+	    $(evtObj.target).attr('contenteditable','true');
+	    $(evtObj.target).focus();
+	});
+    
+    $( ".app" )
+	.delegate(".editable", "blur", function (evtObj) {
+	    console.log("Blurred editable");
+	    $(evtObj.target).attr('contenteditable','false');
+	});
+    
+    $(document).ready(function() {
+	$('.app').on("keyup",'.editable', function(evtObj) {
+            if (evtObj.key == "Enter") {
+		console.log('disable edit for' + evtObj.target);
+		$(evtObj.target).blur();
+	    } else if (evtObj.key == "Esc" || evtObj.key == "Escape" ) {
+		// TODO reset to old innerHTML
+		console.log('edit cancelled');
+		$(evtObj.target).blur();
+	    }
+	});
+    });
+    
+    $( ".app" )
 	.delegate(".catch-input", "change", function (evtObj) {
 	    var val = evtObj.target.value;
 	    val = parseInt(val);
@@ -304,11 +330,25 @@ function run () {
 			    }
 			}
 		    }
+		    updateSummary(g);
 		}
 	    }
 	});
 }
+
+function updateSummary (gr) {
+    var elt = document.getElementById("group-summary-" + gr);
     
+    var data = "<p>Efforts = " + window.elfish.efforts + "</p>";
+    data += "<p>EST = </p>";
+    data += "<p>T = </p>";
+    
+    console.log("Set summary for " + gr);
+    
+    elt.innerHTML = data;
+}
+
+
 // same-ish as window.onload
 $(function () {
     var species = window.elfish.species;

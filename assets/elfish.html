@@ -71,15 +71,15 @@
 
     <script type="text/html" id="template-group">
       <div class="group" data-id="group-{{group.id}}">
-	<h2 contenteditable="true">{{group.title}} {{group.id}}</h2>
+	<h2 class="editable">{{group.title}} {{group.id}}</h2>
 	<!-- TODO insert summary -->
-	<div class="group-summary">Summary</div>
+	<div id="group-summary-{{group.id}}" class="group-summary">Summary</div>
       </div>
     </script>
     
     <script type="text/html" id="template-effort">
       <div class="effort" id="effort-{{effort.id}}">
-	<h3 contenteditable="true">{{effort.title}} {{effort.id}}</h3>
+	<h3 class="editable">{{effort.title}} {{effort.id}}</h3>
 	<input type="number" min="0" class="catch-input" id="ci-{{effort.groupid}}-{{effort.id}}" />
 	<div class="estimate" id="est-{{effort.groupid}}-{{effort.id}}">
 	  {{effort.est}}
@@ -96,7 +96,7 @@
   </head>
   <body>
     <div class="app">
-      <h1 contenteditable="true">Species 1</h1>
+      <h1 class="editable">Species 1</h1>
       <button onClick="createNewSpecies()"><strike>Add species</strike></button>
       <button onClick="createNewGroup()">Add group</button>
       <button onClick="createNewEffort()">Add effort</button>

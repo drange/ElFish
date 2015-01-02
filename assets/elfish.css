@@ -37,3 +37,6 @@ table { border-top: 2px solid rgb(71, 71, 71); }
     padding: 1em;
 }
 
+.summary {
+    display: inline-block;
+}
