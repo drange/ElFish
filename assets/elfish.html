@@ -70,13 +70,13 @@
 
     <script type="text/html" id="template-group">
       <div class="group" data-id="group-{{group.id}}">
-	<h1>{{group.title}} {{group.id}}</h1>
+	<h2 contenteditable="true">{{group.title}} {{group.id}}</h2>
       </div>
     </script>
     
     <script type="text/html" id="template-effort">
       <div class="effort" id="effort-{{effort.id}}">
-	<h2>{{effort.title}} {{effort.id}}</h2>
+	<h3 contenteditable="true">{{effort.title}} {{effort.id}}</h3>
 	<input type="number" min="0" class="catch-input" id="ci-{{effort.groupid}}-{{effort.id}}" />
 	<div class="estimate" id="est-{{effort.groupid}}-{{effort.id}}">
 	  {{effort.est}}
@@ -93,7 +93,7 @@
   </head>
   <body>
     <div class="app">
-      <strong>Species 1</strong>
+      <h1 contenteditable="true">Species 1</h1>
       <button onClick="createNewSpecies()"><strike>Add species</strike></button>
       <button onClick="createNewGroup()">Add group</button>
       <button onClick="createNewEffort()">Add effort</button>
