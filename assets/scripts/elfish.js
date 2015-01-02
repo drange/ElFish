@@ -265,7 +265,7 @@ function run () {
 	    	    for (var e = 1; e <= window.elfish.efforts; e++) {
 			vals.push(getInputValue(s,g,e));
 			
-			if (e >= 3) {
+			if (e >= 2) {
 			    
 			    var arr = [];
 			    var t = 0;
@@ -289,7 +289,7 @@ function run () {
 			    }
 			    
 			    document.getElementById("est-"+g+"-" + e).innerHTML =
-				"EST =" + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; 
+				"N̂ =" + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; 
 			    
 			    document.getElementById("ke-"+g+"-" + e).innerHTML = 
 				"k/E =" + (cf/q).toFixed(2);
