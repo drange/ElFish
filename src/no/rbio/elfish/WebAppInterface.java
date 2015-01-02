@@ -1,5 +1,10 @@
 package no.rbio.elfish;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -39,4 +44,22 @@ public class WebAppInterface {
 	public void showToast(String toast) {
 		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 	}
+
+	/** Write csv to file */
+	@JavascriptInterface
+	public void write(String filename, String csv) {
+		try {
+			File myFile = new File("/sdcard/" + filename + ".csv");
+			myFile.createNewFile();
+			FileOutputStream fOut = new FileOutputStream(myFile);
+			OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+			myOutWriter.append(csv);
+			myOutWriter.close();
+			fOut.close();
+			Toast.makeText(mContext, "Done writing CSV", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+
 }
