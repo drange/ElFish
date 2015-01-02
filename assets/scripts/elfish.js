@@ -1,4 +1,4 @@
-window.elfish = {efforts: 3, groups: 2, species: 1 };
+window.elfish = {efforts: 8, groups: 1, species: 1 };
 
 /**
  * Computes the catchability q = 1-p.
@@ -86,11 +86,25 @@ function confidence (arr, areal) {
     var qk = Math.pow(q,k);
     
     var CR4 = totalCatch / (1-Math.pow(q,k));
-    var CS4 = CR4 * (1-(qk)*qk) / (   Math.pow(1-qk,2)   - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
+    
+    console.log("CR4 = " + CR4);
+    
+    // CR4 * (1-(BV4^$AG4)) * BV4^$AG4
+    var CS4numerator = CR4 * (1-qk) * qk;
+    
+    // (((1-(qk))^2)-(Math.pow((1-q)*k,2))*(Math.pow(q,k-1)))
+    var CS4denominator = (Math.pow(1-qk,2) - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
+    
+    var CS4 = CS4numerator / CS4denominator;
+    console.log("CS4 = " + CS4);
     
     var CT4 = Math.sqrt(CS4);
+
+    console.log("CT4 = " + CT4);
     
     var CU4 = 1.95 * CT4;
+
+    console.log("CU4 = " + CU4);
     
     return CU4/areal * 100
 }
