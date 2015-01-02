@@ -1,4 +1,4 @@
-window.elfish = {efforts: 8, groups: 1, species: 1 };
+window.elfish = {efforts: 3, groups: 1, species: 1 };
 
 /**
  * Computes the catchability q = 1-p.
@@ -111,7 +111,7 @@ function confidence (arr, areal) {
 
 
 function showAndroidToast(toast) {
-    // Android.showToast(toast);
+    Android.showToast(toast);
 }
 
 function getInputValue(sp, gr, ef) {

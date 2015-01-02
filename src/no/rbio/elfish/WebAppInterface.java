@@ -28,6 +28,8 @@ public class WebAppInterface {
 		ClipData cd = ClipData.newPlainText("ElFish CSV", s);
 
 		cm.setPrimaryClip(cd);
+
+		showToast("CSV copied to clipboard");
 	}
 
 	@JavascriptInterface

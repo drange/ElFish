@@ -15,13 +15,14 @@
     <!-- JavaScript / Android bindings -->
 
     <script type="text/javascript">
-      // function estimate(msg) {
-      //     Android.toClipboard(msg);
-      //     showAndroidToast("Copied CSV to clipboard");
-      // }
-    </script>
+    
+      /**
+       * Copy to CSV to clipboard
+       */
+      function androidCopy() {
+	  Android.toClipboard(exportCSV());
+      }
 
-    <script type="text/javascript">
       function androidShare() {
 	  var date = new Date();
 	  
@@ -101,7 +102,7 @@
     <!-- / JavaScript / Android bindings -->
 
     <input type="button" value="Copy to clipboard"
-	   onClick="toAndroidClipboard('todo csv')" />
+	   onClick="androidCopy()" />
 
     <input type="button" value="Share"
 	   onClick="androidShare()" />
