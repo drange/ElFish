@@ -1,124 +1,56 @@
-window.elfish = {efforts: 3, groups: 1, species: 1 };
+// window.elfish = {
+//     "species": [{
+// 	"name": "Species 0",
+// 	"groups": [{
+// 	    "name": "Gr 0",
+// 	    "efforts": [{"name": "Effort 0", "value": 120},
+// 			{"name": "Effort 1", "value": 80}]
+// 	}]
+//     }]
+// }
+
+window.elfish = {
+    species: [{name: "Species 0",
+	       groups: []}]
+}
+
+
 
 /**
- * Computes the catchability q = 1-p.
- *
+ * Takes data from elfish and puts into DOM
  */
-function catchability (arr) {
-    window.elfish.unstable = false;
-    // k = number of removals
-    var k = arr.length;
-    
-    // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
-    
-    var summand = 0.0;
-    for (var i = 1; i < k; i++) {
-        summand += (i * arr[i]);
-    }
-    summand = summand / totalCatch;
-    
-    // c_0 / T can be used as first guess
-    var q = 1 - (arr[0] / totalCatch);
-    
-    console.log("init q = " + q);
-    
-    var sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
-    var qinv = 1 - q;
-    q = (summand + sumtwo) * qinv;
-    console.log("q = " + q);
-    
-    for (var i = 0; i < 100; i++) {
-	var oldq=q;
-	sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
-	qinv = 1 - q;
-	q = (summand + sumtwo) * qinv;
-	// console.log("q" + i + " = " + q);
-	if (Math.abs(oldq-q) < 0.00001) {
-	    return q;
+function doUpdate() {
+    var species = window.elfish.species;
+    for (var s = 0; s < species.length; s++) {
+	var specieName = species[s].name;
+	var groups = species[s].groups;
+	
+	for (var g = 0; g < groups.length; g++) {
+	    var groupName = groups[g].name;
+	    var efforts = groups[g].efforts;
+	    
+	    for (var e = 0; e < efforts.length; e++) {
+		var effortName = efforts[e].name;
+		var value = efforts[e].value;
+		
+		console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
+	    }
 	}
     }
-    console.warn("Unstable q");
-    window.elfish.unstable = true;    
-    return q;
-}
-
-/**
- * Computes T / (1 - q^k)
- * where T = totalCatch (BB4)
- * k = num catch (AG4)
- * q = (1-p) (BV4)
- */
-function estimate (arr) {
-    
-    // k = number of removals
-    var k = arr.length;
-    
-    // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
-    
-    q = catchability(arr);
-    return totalCatch / (1-Math.pow(q,k));
 }
 
 
-/**
- * Computes confidence interval
- */
-function confidence (arr, areal) {
-    // k = number of removals
-    var k = arr.length;
-    
-    // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
-    
-    q = catchability(arr);
-    
-    var qk = Math.pow(q,k);
-    
-    var CR4 = totalCatch / (1-Math.pow(q,k));
-    
-    console.log("CR4 = " + CR4);
-    
-    // CR4 * (1-(BV4^$AG4)) * BV4^$AG4
-    var CS4numerator = CR4 * (1-qk) * qk;
-    
-    // (((1-(qk))^2)-(Math.pow((1-q)*k,2))*(Math.pow(q,k-1)))
-    var CS4denominator = (Math.pow(1-qk,2) - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
-    
-    var CS4 = CS4numerator / CS4denominator;
-    console.log("CS4 = " + CS4);
-    
-    var CT4 = Math.sqrt(CS4);
-
-    console.log("CT4 = " + CT4);
-    
-    var CU4 = 1.96 * CT4;
-
-    console.log("CU4 = " + CU4);
-    
-    return CU4/areal * 100
-}
-
-
-function showAndroidToast(toast) {
-    Android.showToast(toast);
-}
 
 function getInputValue(sp, gr, ef) {
     var elt = getInput(sp,gr,ef);
-    if (elt != null)
-	return elt.value;
-    return NaN;
+    
+    retVal = NaN
+    if (elt != null) {
+	retVal = elt.value;
+	console.log("input field " + sp + "," + gr + "," + ef + " → " + elt.value);
+    }
+    console.log("getInputValue(" + sp + "," + gr + "," + ef + ") → " + retVal);
+    return retVal;
 }
 
 function getInput(sp, gr, ef) {
@@ -130,109 +62,119 @@ function createNewSpecies () {
 }
 
 function createNewGroup (specie) {
-    window.elfish.groups = window.elfish.groups + 1;
+    if (specie >= window.elfish.species.length || specie < 0) {
+	throw new Error("specie must be exisiting id: 0 <= " + specie + " < " + window.elfish.species.length);
+    }
     
-    var sp = window.elfish.species;
-    var gr = window.elfish.groups;
-    var ef = window.elfish.efforts;
+    console.log("createNewGroup(" + specie + ")");
     
-    $(".app:first").loadFromTemplate({
-        template:$("#template-group").html(),
-        data: {
-            group: {
-                id: gr,
-                title: "Group"
-            }
-        }
-    });
-    for (var e = 0; e < ef; e++) {
-	$("[data-id=group-"+gr+"]").loadFromTemplate({
-	    template:$("#template-effort").html(),
-	    data: {
-		effort: {
-		    id: e+1,
-		    groupid: gr,
-		    title: "g" + gr + " Effort",
-		    est: "----",
-		    ke: "----",
-		    te: "----"
-		}
-	    }
-	});
-    }    
+    var species = window.elfish.species[specie];
+    var groups = species.groups;
+    
+    var newGroupId = groups.length;
+    
+    // The number of efforts the new groups should have
+    var numOfEfforts = 2;
+    if (newGroupId > 0) {
+	numOfEfforts = groups[0].efforts.length;
+    } else {
+	console.log("Congratulations on your first group, let me create 2 efforts");
+    }
+    
+    console.log("Creating new group " + newGroupId + " for species " + species);
+    
+    groups.push({name:"Group " + newGroupId, efforts: []});
+    
+    domGroup(newGroupId, "Gruppe");
+    
+    console.log("\tgroups: " + groups);
+    
+    for (var e = 0; e < numOfEfforts; e++)
+	createNewEffortForGroup(specie, newGroupId, "Effort");
+
+
+    return newGroupId;
 }
 
-
-function createNewEffort () {
-    window.elfish.efforts = window.elfish.efforts + 1;
+function createNewEffort (effortName) {
     
-    var sp = window.elfish.species;
-    var gr = window.elfish.groups;
-    var ef = window.elfish.efforts;
-    
-    for (var s = 0; s < sp; s++) {
-	for (var g = 0; g < gr; g++) {
-	    $("[data-id=group-"+(g+1)+"]").loadFromTemplate({
-		template:$("#template-effort").html(),
-		data: {
-		    effort: {
-			id: ef,
-			groupid: g+1,
-			title: "g" + (g+1) + " Effort",
-			est: "----",
-			ke: "----",
-			te: "----"
-		    }
-		}
-	    });
+    if (!effortName) {
+	console.log("Creating effort without predefined name");
+	var s0g0e0 = window.elfish.species[0].groups[0].efforts[0].name;
+	
+	var index = s0g0e0.indexOf(" ");
+	if (index <= 0) {
+	    effortName = "Effort";
+	} else {
+	    effortName = s0g0e0.substr(0,index);
 	}
+	console.log("Creating effort without predefined name: " + effortName);	
     }
+    
+    
+    var species = window.elfish.species;
+    for (var s = 0; s < species.length; s++) {
+	for (var g = 0; g < species[s].groups.length; g++) {
+	    console.log("New effort for S" + s + ".G" + g);
+	    createNewEffortForGroup(s,g,effortName);
+	}
+    }	    
+}
+
+function createNewEffortForGroup (speciesId, groupId, effortName) {
+    var group = window.elfish.species[speciesId].groups[groupId];
+    
+    group.efforts.push({name: effortName, value: ""});
+    
+    domEffort(groupId, group.efforts.length-1, effortName);
 }
 
 
 
 function exportCSV () {
     var csv = "";
-    for (var s = 0; s < window.elfish.species; s++) {
+    
+    var species = window.elfish.species;
+    for (var s = 0; s < species.length; s++) {
+	
+	var groups = species[s].groups;
 	csv += "Species " + (1+s);
-	for (var g = 0; g < window.elfish.groups; g++) {
+	for (var g = 0; g < groups.length; g++) {
+	    
+	    var efforts = groups[g].efforts;
 	    
 	    // INPUT
-	    csv += "\nGroup " + (g+1);
-	    for (var e = 0; e < window.elfish.efforts; e++) {
-		csv += "," + getInputValue(s+1,g+1,e+1);
+	    csv += "\nGroup " + (g);
+	    for (var e = 0; e < efforts.length; e++) {
+		csv += "," + getInputValue(s,g,e);
 	    }
 	    
 	    // EST
 	    csv += "\n";
-	    for (var e = 0; e < window.elfish.efforts; e++) {
+	    for (var e = 0; e < efforts.length; e++) {
 		if (e < 2)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("est-"+(g+1)+"-"+(e+1)).innerHTML;
+		    csv += "," + document.getElementById("est-"+(g)+"-"+(e)).innerHTML;
 	    }
 	    
 	    // k/E
 	    csv += "\n";
-	    for (var e = 0; e < window.elfish.efforts; e++) {
+	    for (var e = 0; e < efforts.length; e++) {
 		if (e < 2)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("ke-"+(g+1)+"-"+(e+1)).innerHTML;
+		    csv += "," + document.getElementById("ke-"+(g)+"-"+(e)).innerHTML;
 	    }
 	    
 	    // T/E
 	    csv += "\n";
-	    for (var e = 0; e < window.elfish.efforts; e++) {
+	    for (var e = 0; e < efforts.length; e++) {
 		if (e < 2)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("te-"+(g+1)+"-"+(e+1)).innerHTML;
+		    csv += "," + document.getElementById("te-"+(g)+"-"+(e)).innerHTML;
 	    }
-	    
-	    
-	    
-	    
 	}
 	csv += "\n";
     }
@@ -242,7 +184,6 @@ function exportCSV () {
     // var ke = document.getElementById("ke-1-3").innerHTML;
     // var te = document.getElementById("te-1-3").innerHTML;
     
-
     return csv;
 }
 
@@ -258,12 +199,13 @@ function run () {
     
     $( ".app" )
 	.delegate(".editable", "blur", function (evtObj) {
+	    // TODO update window.elfish to reflect changes
 	    console.log("Blurred editable");
 	    $(evtObj.target).attr('contenteditable','false');
 	});
     
     $(document).ready(function() {
-	$('.app').on("keyup",'.editable', function(evtObj) {
+	$('.app').on("keydown",'.editable', function(evtObj) {
             if (evtObj.key == "Enter") {
 		console.log('disable edit for' + evtObj.target);
 		$(evtObj.target).blur();
@@ -282,16 +224,30 @@ function run () {
 	    
 	    window.elfish[evtObj.target.id] = val;
 	    
-	    console.log(elfish);
+	    // TODO must find input id and put into window.elfish
+	    inSpecies = parseInt($(evtObj.target).attr("data-input-species"))
+	    inGroup = parseInt($(evtObj.target).attr("data-input-group"))
+	    inEffort = parseInt($(evtObj.target).attr("data-input-effort"))
 	    
-	    for (var s = 1; s <= window.elfish.species; s++) {
-		for (var g = 1; g <= window.elfish.groups; g++) {
+	    console.log("Setting value for s" + inSpecies + ", g" + inGroup + 
+			", e" + inEffort + " → " + val);
+	    
+	    window.elfish.species[inSpecies].groups[inGroup].efforts[inEffort].value = val;
+	    
+	    var species = window.elfish.species;
+	    for (var s = 0; s < species.length; s++) {
+		
+		var groups = species[s].groups;
+		for (var g = 0; g < groups.length; g++) {
 		    
+		    var efforts = groups[g].efforts;
 		    var vals = [];
-	    	    for (var e = 1; e <= window.elfish.efforts; e++) {
+	    	    for (var e = 0; e < efforts.length; e++) {
 			vals.push(getInputValue(s,g,e));
 			
-			if (e >= 2) {
+			
+			if (e > 0) {
+			    // one effort is not enough.
 			    
 			    var arr = [];
 			    var t = 0;
@@ -300,48 +256,53 @@ function run () {
 				arr.push(v);
 				t += v;
 			    }
-		    
+			    
 			    console.log(arr);
-			    if (t != t) return; // NaN
-			    
-			    
-			    
-			    var q = estimate(arr);
-			    var cf = confidence(arr, 100);
-			    var unstable = "";
-			    if (window.elfish.unstable) {
-				window.elfish.unstable = false;
-				unstable = "*";
+			    if (t != t) {
+				console.warn("Contains NaN so abort");
+				return; // NaN
 			    }
 			    
+
+			    var estimateString = getEstimateString(arr);
+			    
 			    document.getElementById("est-"+g+"-" + e).innerHTML =
-				"N̂ =" + q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable; 
+				"N̂ =" + estimateString; 
 			    
 			    document.getElementById("ke-"+g+"-" + e).innerHTML = 
-				"k/E =" + (cf/q).toFixed(2);
+				"k/E =" + getKE(arr);
 			    
 			    document.getElementById("te-"+g+"-" + e).innerHTML = 
-				"T/E =" + (t/q).toFixed(2);
+				"T/E =" + getTE(arr);
 			    
-			    if (cf >= q) {
+			    if (estimateString.contains("*")) {
 				document.getElementById("est-"+g+"-" + e).className = "est red";
 			    } else {
 				document.getElementById("est-"+g+"-" + e).className = "est";
 			    }
 			}
 		    }
-		    updateSummary(g);
+		    updateSummary(s,g);
+		    doUpdate();
 		}
 	    }
 	});
 }
 
-function updateSummary (gr) {
+function updateSummary (sp,gr) {
     var elt = document.getElementById("group-summary-" + gr);
     
-    var data = "<p>Efforts = " + window.elfish.efforts + "</p>";
-    data += "<p>EST = </p>";
-    data += "<p>T = </p>";
+    var groups = window.elfish.species[sp].groups[gr];
+    var numOfEfforts = groups.efforts.length;
+    var totalCatch = 0;
+    for (var e = 0; e < numOfEfforts; e++) {
+	console.log("totalCatch += " + groups.efforts[e].value);
+	totalCatch += parseInt(groups.efforts[e].value);
+    }
+    
+    var data = "<p>Efforts = " + numOfEfforts + "</p>";
+    data += "<p>EST = " + "est" + "</p>"; // TODO get arr
+    data += "<p>T = " + totalCatch + "</p>";
     
     console.log("Set summary for " + gr);
     
@@ -351,49 +312,48 @@ function updateSummary (gr) {
 
 // same-ish as window.onload
 $(function () {
-    var species = window.elfish.species;
-    var groups = window.elfish.groups;
-    var efforts = window.elfish.efforts;
+    // var species = window.elfish.species;
+    // var groups = window.elfish.groups;
+    // var efforts = window.elfish.efforts;
     
-    for (var i = 1; i <= groups; i++) {
-        $(".app:first").loadFromTemplate({
-            template:$("#template-group").html(),
-            data: {
-                group: {
-                    id: i,
-                    title: "Group"
-                }
-            }
-        });
-    }
+    // for (var i = 1; i <= groups; i++) {
+    //     $(".app:first").loadFromTemplate({
+    //         template:$("#template-group").html(),
+    //         data: {
+    //             group: {
+    //                 id: i,
+    //                 title: "Group"
+    //             }
+    //         }
+    //     });
+    // }
     
-    for (var j = 1; j <= groups; j++) {
-        for (var i = 1; i <= efforts; i++) {
-            $("[data-id=group-"+j+"]").loadFromTemplate({
-                template:$("#template-effort").html(),
-                data: {
-                    effort: {
-                        id: i,
-                        groupid: j,
-                        title: "g"+j+ " Effort",
-                        est: "----",
-                        ke: "----",
-                        te: "----"
-                    }
-                }
-            });
-        }
-    }
+    // for (var j = 1; j <= groups; j++) {
+    //     for (var i = 1; i <= efforts; i++) {
+    //         $("[data-id=group-"+j+"]").loadFromTemplate({
+    //             template:$("#template-effort").html(),
+    //             data: {
+    //                 effort: {
+    //                     id: i,
+    //                     groupid: j,
+    //                     title: "g"+j+ " Effort",
+    //                     est: "----",
+    //                     ke: "----",
+    //                     te: "----"
+    //                 }
+    //             }
+    //         });
+    //     }
+    // }
     
     run();
     
-    var arr = [34, 46, 22, 26, 18, 16, 20, 12];
-    console.log("arr = " + arr);
-    var T = 0;
-    $.each(arr,function(){T+=parseFloat(this) || 0;});
+    // var arr = [34, 46, 22, 26, 18, 16, 20, 12];
+    // console.log("arr = " + arr);
+    // var T = 0;
+    // $.each(arr,function(){T+=parseFloat(this) || 0;});
     
-    console.log("T = " + T);
-    console.log("catch="+catchability(arr));
-    console.log("est="+estimate(arr));
-    
+    // console.log("T = " + T);
+    // console.log("catch="+catchability(arr));
+    // console.log("est="+estimate(arr));
 })
