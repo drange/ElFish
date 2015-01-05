@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 public class ElFish extends Activity {
 
@@ -25,16 +24,6 @@ public class ElFish extends Activity {
 		// null);
 
 		webView.loadUrl("file:///android_asset/elfish.html");
-
-	}
-
-	private class FishWebViewClient extends WebViewClient {
-
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			view.loadUrl(url);
-			return true;
-		}
 
 	}
 

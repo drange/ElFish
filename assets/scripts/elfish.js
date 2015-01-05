@@ -200,7 +200,14 @@ function run () {
     $( ".app" )
 	.delegate(".editable", "blur", function (evtObj) {
 	    // TODO update window.elfish to reflect changes
-	    console.log("Blurred editable");
+	    var sp = parseInt($(evtObj.target).attr("data-effort-header-specie"));
+	    var gr = parseInt($(evtObj.target).attr("data-effort-header-group"));
+	    var ef = parseInt($(evtObj.target).attr("data-effort-header-effort"));
+	    
+	    var header = $(evtObj.target).text();
+	    window.elfish.species[sp].groups[gr].efforts[ef].name = header;
+	    
+	    console.log("Updating " + sp + "," + gr + "," + ef + " to " + header);
 	    $(evtObj.target).attr('contenteditable','false');
 	});
     
@@ -211,8 +218,16 @@ function run () {
 		$(evtObj.target).blur();
 	    } else if (evtObj.key == "Esc" || evtObj.key == "Escape" ) {
 		// TODO reset to old innerHTML
+		var sp = parseInt($(evtObj.target).attr("data-effort-header-specie"));
+		var gr = parseInt($(evtObj.target).attr("data-effort-header-group"));
+		var ef = parseInt($(evtObj.target).attr("data-effort-header-effort"));
+		var old = window.elfish.species[sp].groups[gr].efforts[ef].name;
+		
 		console.log('edit cancelled');
 		$(evtObj.target).blur();
+		
+		window.elfish.species[sp].groups[gr].efforts[ef].name = old;
+		var header = $(evtObj.target).text(old);
 	    }
 	});
     });
@@ -275,7 +290,7 @@ function run () {
 			    document.getElementById("te-"+g+"-" + e).innerHTML = 
 				"T/E =" + getTE(arr);
 			    
-			    if (estimateString.contains("*")) {
+			    if (estimateString.indexOf("*") >= 0) {
 				document.getElementById("est-"+g+"-" + e).className = "est red";
 			    } else {
 				document.getElementById("est-"+g+"-" + e).className = "est";
