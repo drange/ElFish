@@ -19,16 +19,19 @@
     <script type="text/html" id="template-specie">
       <div class="specie" data-species-id="{{specie.id}}">
 	<h2 class="editable">{{specie.title}} {{specie.id}}</h2>
-	<button onClick="createNewGroup({{specie.id}})">Add group</button> 
-	<button onClick="createNewEffort()">Add effort</button>
+	<button data-button="group">Add group</button> 
+	<button data-button="effort">Add effort</button>
       </div>
     </script>
     
     
     <script type="text/html" id="template-group">
-      <div class="group" data-specie-id="{{group.specieid}}" data-id="group-{{group.id}}">
+      <div class="group"
+	   data-specie-id="{{group.specieid}}"
+	   data-id="group-{{group.id}}">
 	<h3 class="editable">{{group.title}} {{group.id}}</h3>
-	<div id="group-summary-{{group.id}}" class="group-summary">Summary</div>
+	<div id="group-summary-{{group.id}}" 
+	     class="group-summary">Summary</div>
       </div>
     </script>
     
@@ -40,18 +43,22 @@
 	    data-effort-header-effort="{{effort.id}}">
 	  {{effort.title}} {{effort.id}}
 	</h4>
-	<input type="number" min="0" class="catch-input"
-	       id="ci-{{effort.groupid}}-{{effort.id}}"
-	       data-input-species="0"
+	<!-- input has id: ci-1-2-3 for sp 1, gr 2, eff 3, where ci is
+	"catch input" -->
+	<input type="number" min="0"
+	       class="catch-input"
+	       id="ci-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}"
+	       data-input-species="{{effort.specieid}}"
 	       data-input-group="{{effort.groupid}}"
-	       data-input-effort="{{effort.id}}" />
-	<div class="estimate" id="est-{{effort.groupid}}-{{effort.id}}">
+	       data-input-effort="{{effort.id}}"
+	       value="{{effort.value}}" />
+	<div class="estimate" id="est-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
 	  {{effort.est}}
 	</div>
-	<div class="ke" id="ke-{{effort.groupid}}-{{effort.id}}">
+	<div class="ke" id="ke-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
 	  {{effort.ke}}
 	</div>
-	<div class="te" id="te-{{effort.groupid}}-{{effort.id}}">
+	<div class="te" id="te-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
 	  {{effort.te}}
 	</div>
       </div>

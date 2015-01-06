@@ -26,7 +26,11 @@ function domGroup (groupId, groupName, specieId) {
 }
 
 
-function domEffort (effortId, effortName, groupId, specieId) {
+function domEffort (effortId, effortName, groupId, specieId, value) {
+    if (typeof value === "undefined") {
+	value = "";
+    }
+    
     $("[data-id=group-"+ groupId +"]").loadFromTemplate({
 	template:$("#template-effort").html(),
 	data: {
@@ -37,7 +41,8 @@ function domEffort (effortId, effortName, groupId, specieId) {
 		specieid: specieId,
 		est: "----",
 		ke: "----",
-		te: "----"
+		te: "----",
+		value: value
 	    }
 	}
     });

@@ -9,10 +9,7 @@ function catchability (arr) {
     var k = arr.length;
     
     // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
+    var totalCatch = sum(arr);
     
     var summand = 0.0;
     for (var i = 1; i < k; i++) {
@@ -61,10 +58,7 @@ function estimate (arr) {
     var k = arr.length;
     
     // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
+    var totalCatch = sum(arr);
     
     q = catchability(arr);
     return totalCatch / (1-Math.pow(q,k));
@@ -80,10 +74,7 @@ function confidence (arr, areal) {
     var k = arr.length;
     
     // TOTAL CATCH
-    var totalCatch = 0.0;
-    for (var i = 0; i < k; i++) {
-	totalCatch += arr[i];
-    }
+    var totalCatch = sum(arr);
     
     q = catchability(arr);
     
@@ -158,10 +149,7 @@ function getTE(arr) {
 	return "---";
     }
     
-    var t = 0;
-    for (var i = 0; i < arr.length; i++) {
-	t += arr[i];
-    }
+    t = sum(arr);
     
     // todo precomputed
     var q = estimate(arr);
@@ -173,4 +161,16 @@ function getTE(arr) {
     }
     
     return (t/q).toFixed(2);
+}
+
+
+/**
+ * Returns the sum of the values in arr.
+ */
+function sum(arr) {
+    var t = 0;
+    for (var i = 0; i < arr.length; i++) {
+	t += arr[i];
+    }
+    return t;
 }

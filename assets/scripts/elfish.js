@@ -1,17 +1,5 @@
-// window.elfish = {
-//     "species": [{
-// 	"name": "Species 0",
-// 	"groups": [{
-// 	    "name": "Gr 0",
-// 	    "efforts": [{"name": "Effort 0", "value": 120},
-// 			{"name": "Effort 1", "value": 80}]
-// 	}]
-//     }]
-// }
-
 window.elfish = {
-    species: [{name: "Species 0",
-	       groups: []}]
+    species: []
 }
 
 function store() {
@@ -57,20 +45,26 @@ function doUpdate() {
 	var specieName = species[s].name;
 	var groups = species[s].groups;
 	
+	
 	for (var g = 0; g < groups.length; g++) {
 	    var groupName = groups[g].name;
 	    var efforts = groups[g].efforts;
 	    
+	    domGroup(g, groupName, s);
+	    
+	    
 	    for (var e = 0; e < efforts.length; e++) {
+		
 		var effortName = efforts[e].name;
 		var value = efforts[e].value;
+		
+		domEffort(e, effortName, g, s, value);
 		
 		console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
 	    }
 	}
     }
 }
-
 
 
 function getInputValue(sp, gr, ef) {
@@ -86,14 +80,14 @@ function getInputValue(sp, gr, ef) {
 }
 
 function getInput(sp, gr, ef) {
-    var key = "ci-" + gr + "-" + ef;
+    var key = "ci-" + sp + "-" + gr + "-" + ef;
     return document.getElementById(key);
 }
 
 function createNewSpecies () {
     // TODO fix species title/name
     window.elfish.species.push({name: "Art", groups: []});
-    domSpecie(window.elfish.species.length, "Art");
+    domSpecie(window.elfish.species.length-1, "Art");
 }
 
 function createNewGroup (specie) {
@@ -131,13 +125,17 @@ function createNewGroup (specie) {
     return newGroupId;
 }
 
-function createNewEffort (effortName) {
+function createNewEffort (effortName, specieId) {
+    if (window.elfish.species[specieId].groups.length == 0) {
+	createNewGroup(specieId);
+	return;
+    }
     
     if (!effortName) {
 	console.log("Creating effort without predefined name");
-	var s0g0e0 = window.elfish.species[0].groups[0].efforts[0].name;
+	var firstName = window.elfish.species[specieId].groups[0].efforts[0].name;
 	
-	var index = s0g0e0.indexOf(" ");
+	var index = firstName.indexOf(" ");
 	if (index <= 0) {
 	    effortName = "Effort";
 	} else {
@@ -226,6 +224,23 @@ function exportCSV () {
 
 function run () {
     $( ".app" )
+	.delegate("button[data-button='effort']", "click", function (evtObj) {
+	    console.log("new effort");
+	    var jqPar = $(evtObj.target).parent(".specie");
+	    var specieId = jqPar.data("species-id");
+	    createNewEffort(specieId);
+	});
+
+    $( ".app" )
+	.delegate("button[data-button='group']", "click", function (evtObj) {
+	    console.log("new group");
+	    var jqPar = $(evtObj.target).parent(".specie");
+	    var specieId = jqPar.data("species-id");
+	    createNewGroup(specieId);
+	});
+    
+
+    $( ".app" )
 	.delegate(".editable", "click", function (evtObj) {
 	    console.log("Clicked editable");
 	    $(evtObj.target).attr('contenteditable','true');
@@ -284,6 +299,8 @@ function run () {
 	    
 	    window.elfish.species[inSpecies].groups[inGroup].efforts[inEffort].value = val;
 	    
+	    // TODO what's going on below here?
+	    
 	    var species = window.elfish.species;
 	    for (var s = 0; s < species.length; s++) {
 		
@@ -316,13 +333,13 @@ function run () {
 
 			    var estimateString = getEstimateString(arr);
 			    
-			    document.getElementById("est-"+g+"-" + e).innerHTML =
+			    document.getElementById("est-" + s + "-" + g + "-" + e).innerHTML =
 				"N̂ =" + estimateString; 
 			    
-			    document.getElementById("ke-"+g+"-" + e).innerHTML = 
+			    document.getElementById("ke-"+s+"-"+g+"-" + e).innerHTML = 
 				"k/E =" + getKE(arr);
 			    
-			    document.getElementById("te-"+g+"-" + e).innerHTML = 
+			    document.getElementById("te-"+s+"-"+g+"-" + e).innerHTML = 
 				"T/E =" + getTE(arr);
 			    
 			    if (estimateString.indexOf("*") >= 0) {
@@ -330,6 +347,9 @@ function run () {
 			    } else {
 				document.getElementById("est-"+g+"-" + e).className = "est";
 			    }
+			    
+			    console.log("est: " + estimateString);
+			    
 			}
 		    }
 		    store();
