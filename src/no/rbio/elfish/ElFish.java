@@ -16,6 +16,7 @@ public class ElFish extends Activity {
 
 		webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.getSettings().setDomStorageEnabled(true);
 
 		// javascript bindings
 		webView.addJavascriptInterface(new WebAppInterface(this), "Android");

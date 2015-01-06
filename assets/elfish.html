@@ -16,23 +16,30 @@
     <script src="scripts/elfish.js"></script>
     
     <!-- TODO insert specie -->
+    <script type="text/html" id="template-specie">
+      <div class="specie" data-species-id="{{specie.id}}">
+	<h2 class="editable">{{specie.title}} {{specie.id}}</h2>
+	<button onClick="createNewGroup({{specie.id}})">Add group</button> 
+	<button onClick="createNewEffort()">Add effort</button>
+      </div>
+    </script>
+    
+    
     <script type="text/html" id="template-group">
-      <div class="group" data-id="group-{{group.id}}">
-	<h2 class="editable">{{group.title}} {{group.id}}</h2>
-	<!-- TODO insert summary -->
+      <div class="group" data-specie-id="{{group.specieid}}" data-id="group-{{group.id}}">
+	<h3 class="editable">{{group.title}} {{group.id}}</h3>
 	<div id="group-summary-{{group.id}}" class="group-summary">Summary</div>
       </div>
     </script>
     
     <script type="text/html" id="template-effort">
       <div class="effort" id="effort-{{effort.id}}">
-	<!-- TODO insert specie -->
-	<h3 class="editable"
-	    data-effort-header-specie="0"
+	<h4 class="editable"
+	    data-effort-header-specie="{{effort.specieid}}"
 	    data-effort-header-group="{{effort.groupid}}"
 	    data-effort-header-effort="{{effort.id}}">
 	  {{effort.title}} {{effort.id}}
-	</h3>
+	</h4>
 	<input type="number" min="0" class="catch-input"
 	       id="ci-{{effort.groupid}}-{{effort.id}}"
 	       data-input-species="0"
@@ -53,25 +60,31 @@
   </head>
   <body>
     <div class="app">
-      <h1 class="editable">Species 0</h1>
-      <button onClick="createNewSpecies()"><strike>Add species</strike></button>
-
-      <button onClick="createNewGroup(0)">Add group</button> <!-- todo
-      get current species -->
-
-      <button onClick="createNewEffort()">Add effort</button>
-  </div>
-  
-    <!-- / JavaScript / Android bindings -->
-
-    <input type="button" value="Copy to clipboard"
-	   onClick="androidCopy()" />
-
-    <input type="button" value="Share"
-	   onClick="androidShare()" />
-
-    <input type="button" value="Write to file"
-	   onClick="androidWrite()" />
+      <h1>ElFish</h1>
+      <button onClick="createNewSpecies()">Add species</button>
+    </div>
     
+    <div class="footer">
+      <!-- / JavaScript / Android bindings -->
+      <h1>&nbsp;</h1>
+      <hr />
+      <h1>Management</h1>
+      
+      <input type="button" value="Copy to clipboard"
+	     onClick="androidCopy()" />
+      
+      <input type="button" value="Share"
+	     onClick="androidShare()" />
+      
+      <input type="button" value="Write to file"
+	     onClick="androidWrite()" />
+      
+      <!-- Local Storage management -->
+      <input type="button" value="Clear"
+	     onClick="clearLocalStorage()" />
+      
+      <input type="button" value="Update"
+	     onClick="doUpdate()" />
+    </div>
   </body>
 </html>

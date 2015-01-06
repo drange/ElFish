@@ -14,6 +14,33 @@ window.elfish = {
 	       groups: []}]
 }
 
+function store() {
+    console.log("storing ... ");
+    // Put the object into storage
+    localStorage.setItem('elfish', JSON.stringify(window.elfish));
+    console.log("done");
+}
+
+function retrieve() {
+    console.log("retrieving ... ");
+    // Retrieve the object from storage
+    var retrievedObject = localStorage.getItem('elfish');
+    window.elfish = JSON.parse(retrievedObject);
+    console.log("done");
+    doUpdate();
+}
+
+/**
+ * Clears local storage
+ */
+function clearLocalStorage() {
+    console.log("Clearing local storage ... ");
+    
+    // TODO make backup copy
+    
+    window.localStorage.removeItem("elfish");
+    doUpdate();
+}
 
 
 /**
@@ -21,7 +48,12 @@ window.elfish = {
  */
 function doUpdate() {
     var species = window.elfish.species;
+    
+    $('.specie').remove();
+    
     for (var s = 0; s < species.length; s++) {
+	domSpecie(s, window.elfish.species[s].name);
+	
 	var specieName = species[s].name;
 	var groups = species[s].groups;
 	
@@ -59,6 +91,9 @@ function getInput(sp, gr, ef) {
 }
 
 function createNewSpecies () {
+    // TODO fix species title/name
+    window.elfish.species.push({name: "Art", groups: []});
+    domSpecie(window.elfish.species.length, "Art");
 }
 
 function createNewGroup (specie) {
@@ -85,7 +120,7 @@ function createNewGroup (specie) {
     
     groups.push({name:"Group " + newGroupId, efforts: []});
     
-    domGroup(newGroupId, "Gruppe");
+    domGroup(newGroupId, "Gruppe", specie);
     
     console.log("\tgroups: " + groups);
     
@@ -126,7 +161,7 @@ function createNewEffortForGroup (speciesId, groupId, effortName) {
     
     group.efforts.push({name: effortName, value: ""});
     
-    domEffort(groupId, group.efforts.length-1, effortName);
+    domEffort(group.efforts.length-1, effortName, groupId, speciesId);
 }
 
 
@@ -297,6 +332,7 @@ function run () {
 			    }
 			}
 		    }
+		    store();
 		    updateSummary(s,g);
 		    doUpdate();
 		}
@@ -360,6 +396,13 @@ $(function () {
     //         });
     //     }
     // }
+
+    if (window.localStorage.getItem("elfish") === null) {
+	console.log("No local storage, starting fresh ... ");
+    } else {
+	console.log("Has local storage, reloading ... ");
+	retrieve();
+    }
     
     run();
     
