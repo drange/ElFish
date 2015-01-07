@@ -1,4 +1,5 @@
 window.elfish = {
+    numberOfEfforts: 2,
     species: []
 }
 
@@ -35,35 +36,35 @@ function clearLocalStorage() {
  * Takes data from elfish and puts into DOM
  */
 function doUpdate() {
-    var species = window.elfish.species;
+    // var species = window.elfish.species;
     
-    $('.specie').remove();
+    // $('.specie').remove();
     
-    for (var s = 0; s < species.length; s++) {
-	domSpecie(s, window.elfish.species[s].name);
+    // for (var s = 0; s < species.length; s++) {
+    // 	domSpecie(s, window.elfish.species[s].name);
 	
-	var specieName = species[s].name;
-	var groups = species[s].groups;
+    // 	var specieName = species[s].name;
+    // 	var groups = species[s].groups;
 	
 	
-	for (var g = 0; g < groups.length; g++) {
-	    var groupName = groups[g].name;
-	    var efforts = groups[g].efforts;
+    // 	for (var g = 0; g < groups.length; g++) {
+    // 	    var groupName = groups[g].name;
+    // 	    var efforts = groups[g].efforts;
 	    
-	    domGroup(g, groupName, s);
+    // 	    domGroup(g, groupName, s);
 	    
 	    
-	    for (var e = 0; e < efforts.length; e++) {
+    // 	    for (var e = 0; e < efforts.length; e++) {
 		
-		var effortName = efforts[e].name;
-		var value = efforts[e].value;
+    // 		var effortName = efforts[e].name;
+    // 		var value = efforts[e].value;
 		
-		domEffort(e, effortName, g, s, value);
+    // 		domEffort(e, effortName, g, s, value);
 		
-		console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
-	    }
-	}
-    }
+    // 		console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
+    // 	    }
+    // 	}
+    // }
 }
 
 
@@ -102,67 +103,89 @@ function createNewGroup (specie) {
     
     var newGroupId = groups.length;
     
-    // The number of efforts the new groups should have
-    var numOfEfforts = 2;
-    if (newGroupId > 0) {
-	numOfEfforts = groups[0].efforts.length;
-    } else {
-	console.log("Congratulations on your first group, let me create 2 efforts");
-    }
-    
-    console.log("Creating new group " + newGroupId + " for species " + species);
-    
     groups.push({name:"Group " + newGroupId, efforts: []});
     
     domGroup(newGroupId, "Gruppe", specie);
     
     console.log("\tgroups: " + groups);
     
-    for (var e = 0; e < numOfEfforts; e++)
-	createNewEffortForGroup(specie, newGroupId, "Effort");
-
-
+    populateGroupsWithEfforts();
+    
     return newGroupId;
 }
 
-function createNewEffort (effortName, specieId) {
-    console.log("specieId: " + specieId);
-    if (window.elfish.species[specieId].groups.length == 0) {
-	createNewGroup(specieId);
-	return;
-    }
-    
-    if (!effortName) {
-	console.log("Creating effort without predefined name");
-	var firstName = window.elfish.species[specieId].groups[0].efforts[0].name;
-	
-	var index = firstName.indexOf(" ");
-	if (index <= 0) {
-	    effortName = "Effort";
-	} else {
-	    effortName = firstName.substr(0,index);
+
+function populateGroupsWithEfforts() {
+    var n = window.elfish.numberOfEfforts;
+    for (var s = 0; s < window.elfish.species.length; s++) {
+	for (var g = 0; g < window.elfish.species[s].groups.length; g++) {
+	    var gr = window.elfish.species[s].groups[g];
+	    while (gr.efforts.length < n) {
+		createNewEffortForGroup("", g, s);
+	    }
 	}
-	console.log("Creating effort without predefined name: " + effortName);	
     }
-    
+}
+
+
+/**
+ * This function increases the global effort count by one, and then
+ * proceeds to add efforts to all the groups in every specie.
+ *
+ */
+function createNewEffort (effortName) {
+    window.elfish.numberOfEfforts += 1;
     
     var species = window.elfish.species;
     for (var s = 0; s < species.length; s++) {
 	for (var g = 0; g < species[s].groups.length; g++) {
-	    console.log("New effort for S" + s + ".G" + g);
-	    createNewEffortForGroup(s,g,effortName);
+	    var group = species[s].groups[g];
+	    if (group.efforts.length >= window.elfish.numberOfEfforts) {
+		console.log("Enough efforts\t for S" + s + ".G" + g);
+		continue;
+	    } else {
+		console.log("New effort\t for S" + s + ".G" + g);
+		createNewEffortForGroup(effortName, g, s);
+	    }
 	}
-    }	    
+    }
 }
 
-function createNewEffortForGroup (speciesId, groupId, effortName) {
+/**
+ *  Creates a new effort for the given group.  If the group already
+ *  has enough efforts according to window.elfish.numberOfEfforts,
+ *  logs a warning, and returns.
+ *
+ */
+function createNewEffortForGroup (effortName, groupId, speciesId) {
     var group = window.elfish.species[speciesId].groups[groupId];
+    
+    console.log("createNewEffortForGroup(" + effortName + "," + groupId + ", " + 
+		speciesId + ")");
+    
+    // checking if we have too many efforts already
+    if (group.efforts.length >= window.elfish.numberOfEfforts) {
+	console.warn("Too many efforts already for group " + groupId + " in species " + speciesId);
+	return;
+    }
+
+    if (!effortName) {
+	console.log("Creating effort without predefined name");
+	if (window.elfish.species.length == 0 || 
+	    window.elfish.species[0].groups.length == 0 ||
+	    window.elfish.species[0].groups[0].efforts.length == 0) {
+	    effortName = "Effort";
+	} else {
+	    var firstName = window.elfish.species[0].groups[0].efforts[0].name;
+	    effortName = firstToken(firstName);
+	}
+    }
+    
     
     group.efforts.push({name: effortName, value: ""});
     
     domEffort(group.efforts.length-1, effortName, groupId, speciesId);
 }
-
 
 
 function exportCSV () {
@@ -303,6 +326,12 @@ function run () {
 	    var jqPar = $(evtObj.target).parent(".specie");
 	    var specieId = jqPar.data("species-id");
 	    createNewGroup(specieId);
+	});
+
+    $( ".app" )
+	.delegate("button[data-button='species']", "click", function (evtObj) {
+	    console.log("new species");
+	    createNewSpecies();
 	});
     
 

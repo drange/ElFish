@@ -27,23 +27,27 @@ function domGroup (groupId, groupName, specieId) {
 
 
 function domEffort (effortId, effortName, groupId, specieId, value) {
+    console.log("domEffort(" + effortId + "," + effortName + "," + 
+		groupId + "," + specieId + "," + value + ")");
+    
     if (typeof value === "undefined") {
 	value = "";
     }
     
-    $("[data-id=group-"+ groupId +"]").loadFromTemplate({
-	template:$("#template-effort").html(),
-	data: {
-	    effort: {
-		id: effortId,
-		title: effortName,
-		groupid: groupId,
-		specieid: specieId,
-		est: "----",
-		ke: "----",
-		te: "----",
-		value: value
+    $(".group[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]")
+	.loadFromTemplate({
+	    template:$("#template-effort").html(),
+	    data: {
+		effort: {
+		    id: effortId,
+		    title: effortName,
+		    groupid: groupId,
+		    specieid: specieId,
+		    est: "----",
+		    ke: "----",
+		    te: "----",
+		    value: value
+		}
 	    }
-	}
-    });
+	});
 }

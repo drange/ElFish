@@ -11,6 +11,7 @@
     <script src="scripts/jquery.loadFromTemplate.min.js"></script>
 
     <script src="scripts/elfishMath.js"></script>
+    <script src="scripts/elfishUtil.js"></script>
     <script src="scripts/elfishAndroid.js"></script>
     <script src="scripts/elfishTemplates.js"></script>
     <script src="scripts/elfish.js"></script>
@@ -20,7 +21,6 @@
       <div class="specie" data-species-id="{{specie.id}}">
 	<h2 class="editable">{{specie.title}} {{specie.id}}</h2>
 	<button data-button="group">Add group</button> 
-	<button data-button="effort">Add effort</button>
       </div>
     </script>
     
@@ -36,7 +36,8 @@
     </script>
     
     <script type="text/html" id="template-effort">
-      <div class="effort" id="effort-{{effort.id}}">
+      <div class="effort"
+	   id="effort-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
 	<h4 class="editable"
 	    data-effort-header-specie="{{effort.specieid}}"
 	    data-effort-header-group="{{effort.groupid}}"
@@ -68,7 +69,8 @@
   <body>
     <div class="app">
       <h1>ElFish</h1>
-      <button onClick="createNewSpecies()">Add species</button>
+      <button data-button="species">Add species</button>
+      <button data-button="effort">Add effort</button>
     </div>
     
     <div class="footer">
