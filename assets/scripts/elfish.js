@@ -126,6 +126,7 @@ function createNewGroup (specie) {
 }
 
 function createNewEffort (effortName, specieId) {
+    console.log("specieId: " + specieId);
     if (window.elfish.species[specieId].groups.length == 0) {
 	createNewGroup(specieId);
 	return;
@@ -139,7 +140,7 @@ function createNewEffort (effortName, specieId) {
 	if (index <= 0) {
 	    effortName = "Effort";
 	} else {
-	    effortName = s0g0e0.substr(0,index);
+	    effortName = firstName.substr(0,index);
 	}
 	console.log("Creating effort without predefined name: " + effortName);	
     }
@@ -221,14 +222,79 @@ function exportCSV () {
 }
 
 
+function recomputeValues(s,g,e) {
+    // the values for effort e in species s, group g changed, recompute the entire group
+    // TODO what's going on below here?
+    
+    var specie = window.elfish.species[s];
+    var group = specie.groups[g];
+    var efforts = group.efforts;
+    
+    var vals = [];
+    for (var e = 0; e < efforts.length; e++) {
+	vals.push(getInputValue(s,g,e));
+	
+	
+	if (e > 0) {
+	    // one effort is not enough.
+	    
+	    var arr = [];
+	    var t = 0;
+	    for (var i = 0; i < vals.length; i++) {
+		var v = parseInt(vals[i],10)
+		arr.push(v);
+		t += v;
+	    }
+	    
+	    console.log(arr);
+	    if (t != t) {
+		console.warn("Contains NaN so abort");
+		return; // NaN
+	    }
+	    
+	    
+	    var estimateString = getEstimateString(arr);
+	    
+	    var postfix = "-" + s + "-" + g + "-" + e;
+	    console.log("postfix = " + postfix);
+	    
+	    document.getElementById("est" + postfix).innerHTML =
+		"N̂ =" + estimateString; 
+	    
+	    document.getElementById("ke" + postfix).innerHTML = 
+		"k/E =" + getKE(arr);
+	    
+	    document.getElementById("te" + postfix).innerHTML = 
+		"T/E =" + getTE(arr);
+	    
+	    if (estimateString.indexOf("*") >= 0) {
+		document.getElementById("est" + postfix).className = "est red";
+	    } else {
+		document.getElementById("est" + postfix).className = "est";
+	    }
+	    
+	    console.log("est: " + estimateString);
+	    
+	}
+    }
+    store();
+    updateSummary(s,g);
+    doUpdate();    
+}
+
 
 function run () {
     $( ".app" )
 	.delegate("button[data-button='effort']", "click", function (evtObj) {
 	    console.log("new effort");
+	    
 	    var jqPar = $(evtObj.target).parent(".specie");
-	    var specieId = jqPar.data("species-id");
-	    createNewEffort(specieId);
+	    console.log("+parent: " + jqPar);
+	    
+	    var specieId = parseInt(jqPar.data("species-id"));
+	    console.log("+species-id: " + specieId);
+	    
+	    createNewEffort("", specieId);
 	});
 
     $( ".app" )
@@ -290,73 +356,11 @@ function run () {
 	    window.elfish[evtObj.target.id] = val;
 	    
 	    // TODO must find input id and put into window.elfish
-	    inSpecies = parseInt($(evtObj.target).attr("data-input-species"))
-	    inGroup = parseInt($(evtObj.target).attr("data-input-group"))
-	    inEffort = parseInt($(evtObj.target).attr("data-input-effort"))
+	    s = parseInt($(evtObj.target).attr("data-input-species"))
+	    g = parseInt($(evtObj.target).attr("data-input-group"))
+	    e = parseInt($(evtObj.target).attr("data-input-effort"))
 	    
-	    console.log("Setting value for s" + inSpecies + ", g" + inGroup + 
-			", e" + inEffort + " → " + val);
-	    
-	    window.elfish.species[inSpecies].groups[inGroup].efforts[inEffort].value = val;
-	    
-	    // TODO what's going on below here?
-	    
-	    var species = window.elfish.species;
-	    for (var s = 0; s < species.length; s++) {
-		
-		var groups = species[s].groups;
-		for (var g = 0; g < groups.length; g++) {
-		    
-		    var efforts = groups[g].efforts;
-		    var vals = [];
-	    	    for (var e = 0; e < efforts.length; e++) {
-			vals.push(getInputValue(s,g,e));
-			
-			
-			if (e > 0) {
-			    // one effort is not enough.
-			    
-			    var arr = [];
-			    var t = 0;
-			    for (var i = 0; i < vals.length; i++) {
-				var v = parseInt(vals[i],10)
-				arr.push(v);
-				t += v;
-			    }
-			    
-			    console.log(arr);
-			    if (t != t) {
-				console.warn("Contains NaN so abort");
-				return; // NaN
-			    }
-			    
-
-			    var estimateString = getEstimateString(arr);
-			    
-			    document.getElementById("est-" + s + "-" + g + "-" + e).innerHTML =
-				"N̂ =" + estimateString; 
-			    
-			    document.getElementById("ke-"+s+"-"+g+"-" + e).innerHTML = 
-				"k/E =" + getKE(arr);
-			    
-			    document.getElementById("te-"+s+"-"+g+"-" + e).innerHTML = 
-				"T/E =" + getTE(arr);
-			    
-			    if (estimateString.indexOf("*") >= 0) {
-				document.getElementById("est-"+g+"-" + e).className = "est red";
-			    } else {
-				document.getElementById("est-"+g+"-" + e).className = "est";
-			    }
-			    
-			    console.log("est: " + estimateString);
-			    
-			}
-		    }
-		    store();
-		    updateSummary(s,g);
-		    doUpdate();
-		}
-	    }
+	    recomputeValues(s,g,e);
 	});
 }
 
