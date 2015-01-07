@@ -16,8 +16,47 @@ function retrieve() {
     var retrievedObject = localStorage.getItem('elfish');
     window.elfish = JSON.parse(retrievedObject);
     console.log("done");
-    doUpdate();
+    reloadDataIntoDom();
 }
+
+
+/**
+ * Should only be run on window.onload after load from localStorage,
+ * however it causes no harm to run it.  It deletes the content of
+ * .app and reloads from window.elfish.
+ *
+ */
+function reloadDataIntoDom() {
+    
+    console.log(window.elfish);
+    
+    console.log("Emptying .app ... ");
+    $(".app").empty();
+    
+    console.log("Populating ... ");
+    for (var s = 0; s < window.elfish.species.length; s++) {
+	var sName = window.elfish.species[s].name;
+	domSpecie(s, sName);
+	console.log("Added specie " + s + ": " + sName);
+	
+	var groups = window.elfish.species[s].groups;
+	
+	for (var g = 0; g < groups.length; g++) {
+	    var gName = groups[g].name;
+	    domGroup(g, gName, s);
+	    console.log("\tAdded group " + g + ": " + gName);
+	    
+	    for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
+		var eName = groups[g].efforts[e].name;
+		var value =  groups[g].efforts[e].value;
+		domEffort(e, eName, g, s, value);
+		console.log("\t\tAdded effort " + e + ": " + eName + " (" + value + ")");
+		recomputeValues(s,g,e);
+	    }
+	}
+    }
+}
+
 
 /**
  * Clears local storage
@@ -392,12 +431,11 @@ function run () {
 	    var val = evtObj.target.value;
 	    val = parseInt(val);
 	    
-	    window.elfish[evtObj.target.id] = val;
-	    
-	    // TODO must find input id and put into window.elfish
 	    s = parseInt($(evtObj.target).attr("data-input-species"))
 	    g = parseInt($(evtObj.target).attr("data-input-group"))
 	    e = parseInt($(evtObj.target).attr("data-input-effort"))
+	    
+	    window.elfish.species[s].groups[g].efforts[e].value = val;
 	    
 	    recomputeValues(s,g,e);
 	});
