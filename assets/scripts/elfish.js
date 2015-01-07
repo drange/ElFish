@@ -80,8 +80,14 @@ function getInputValue(sp, gr, ef) {
     return retVal;
 }
 
-function getInput(sp, gr, ef) {
-    var key = "ci-" + sp + "-" + gr + "-" + ef;
+
+function getInput(s,g,e) {
+    var postfix = "-" + s + "-" + g + "-" + e;
+    console.log("postfix = " + postfix);
+    
+    // TODO use JQuery instead of postfix on id of dom elts
+    var key = "ci" + postfix;
+    
     return document.getElementById(key);
 }
 
@@ -209,37 +215,41 @@ function exportCSV () {
 	    // EST
 	    csv += "\n";
 	    for (var e = 0; e < efforts.length; e++) {
-		if (e < 2)
+		// TODO instead of postfix id on dom element, do JQuery!
+		var postfix = "-" + s + "-" + g + "-" + e;
+		
+		if (e <= 0)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("est-"+(g)+"-"+(e)).innerHTML;
+		    csv += "," + document.getElementById("est" + postfix).innerHTML;
 	    }
 	    
 	    // k/E
 	    csv += "\n";
 	    for (var e = 0; e < efforts.length; e++) {
-		if (e < 2)
+		// TODO instead of postfix id on dom element, do JQuery!
+		var postfix = "-" + s + "-" + g + "-" + e;
+		
+		if (e <= 0)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("ke-"+(g)+"-"+(e)).innerHTML;
+		    csv += "," + document.getElementById("ke" + postfix).innerHTML;
 	    }
 	    
 	    // T/E
 	    csv += "\n";
 	    for (var e = 0; e < efforts.length; e++) {
-		if (e < 2)
+		// TODO instead of postfix id on dom element, do JQuery!
+		var postfix = "-" + s + "-" + g + "-" + e;
+		
+		if (e <= 0)
 		    csv += ",---";
 		else
-		    csv += "," + document.getElementById("te-"+(g)+"-"+(e)).innerHTML;
+		    csv += "," + document.getElementById("te" + postfix).innerHTML;
 	    }
 	}
 	csv += "\n";
     }
-    
-    // TODO add also EST,k/E,T/E data
-    // var est = document.getElementById("est-1-3").innerHTML;
-    // var ke = document.getElementById("ke-1-3").innerHTML;
-    // var te = document.getElementById("te-1-3").innerHTML;
     
     return csv;
 }
