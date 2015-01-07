@@ -12,7 +12,7 @@ function domSpecie (specieId, specieName) {
 }
 
 function domGroup (groupId, groupName, specieId) {
-    var selector = "[data-species-id=" + specieId + "]";
+    var selector = ".specie-groups[data-species-id=" + specieId + "]";
     $(selector).loadFromTemplate({
         template:$("#template-group").html(),
         data: {
@@ -34,7 +34,7 @@ function domEffort (effortId, effortName, groupId, specieId, value) {
 	value = "";
     }
     
-    $(".group[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]")
+    $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]")
 	.loadFromTemplate({
 	    template:$("#template-effort").html(),
 	    data: {

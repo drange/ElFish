@@ -24,7 +24,10 @@
     <script type="text/html" id="template-specie">
       <div class="specie" data-species-id="{{specie.id}}">
 	<h2 class="editable">{{specie.title}} {{specie.id}}</h2>
-	<button data-button="group">Add group</button> 
+	<div class="specie-groups"
+	     data-species-id="{{specie.id}}">
+	</div>
+	<button data-button="group">New group</button> 
       </div>
     </script>
     
@@ -36,6 +39,11 @@
 	<h3 class="editable">{{group.title}} {{group.id}}</h3>
 	<div id="group-summary-{{group.id}}" 
 	     class="group-summary">Summary</div>
+	<div class="group-efforts"
+	     data-specie-id="{{group.specieid}}"
+	     data-id="group-{{group.id}}">	     
+	</div>
+	<button class="effort-button" data-button="effort">+</button>
       </div>
     </script>
     
@@ -74,7 +82,6 @@
     <div class="app">
       <h1>ElFish</h1>
       <button data-button="species">Add species</button>
-      <button data-button="effort">Add effort</button>
     </div>
     
     <div class="footer">
