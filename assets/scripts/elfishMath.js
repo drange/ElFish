@@ -1,4 +1,3 @@
-
 /**
  * Computes the catchability q = 1-p.
  *
@@ -51,9 +50,6 @@ function catchability (arr) {
  * q = (1-p) (BV4)
  */
 function estimate (arr) {
-    
-    console.log("estimating array " + arr);
-    
     // k = number of removals
     var k = arr.length;
     
@@ -67,9 +63,14 @@ function estimate (arr) {
 
 
 /**
- * Computes confidence interval
+ * Computes confidence interval.  If no area is given, assumes 100.
  */
-function confidence (arr, areal) {
+function confidence (arr, area) {
+    if (typeof area === "undefined") {
+	area = 100;
+    }
+    
+    
     // k = number of removals
     var k = arr.length;
     
@@ -101,7 +102,7 @@ function confidence (arr, areal) {
 
     // console.log("CU4 = " + CU4);
     
-    return CU4/areal * 100
+    return CU4/area * 100
 }
 
 /**

@@ -416,40 +416,7 @@ function updateSummary (sp,gr) {
 
 // same-ish as window.onload
 $(function () {
-    // var species = window.elfish.species;
-    // var groups = window.elfish.groups;
-    // var efforts = window.elfish.efforts;
     
-    // for (var i = 1; i <= groups; i++) {
-    //     $(".app:first").loadFromTemplate({
-    //         template:$("#template-group").html(),
-    //         data: {
-    //             group: {
-    //                 id: i,
-    //                 title: "Group"
-    //             }
-    //         }
-    //     });
-    // }
-    
-    // for (var j = 1; j <= groups; j++) {
-    //     for (var i = 1; i <= efforts; i++) {
-    //         $("[data-id=group-"+j+"]").loadFromTemplate({
-    //             template:$("#template-effort").html(),
-    //             data: {
-    //                 effort: {
-    //                     id: i,
-    //                     groupid: j,
-    //                     title: "g"+j+ " Effort",
-    //                     est: "----",
-    //                     ke: "----",
-    //                     te: "----"
-    //                 }
-    //             }
-    //         });
-    //     }
-    // }
-
     if (window.localStorage.getItem("elfish") === null) {
 	console.log("No local storage, starting fresh ... ");
     } else {
@@ -458,13 +425,4 @@ $(function () {
     }
     
     run();
-    
-    // var arr = [34, 46, 22, 26, 18, 16, 20, 12];
-    // console.log("arr = " + arr);
-    // var T = 0;
-    // $.each(arr,function(){T+=parseFloat(this) || 0;});
-    
-    // console.log("T = " + T);
-    // console.log("catch="+catchability(arr));
-    // console.log("est="+estimate(arr));
 })
