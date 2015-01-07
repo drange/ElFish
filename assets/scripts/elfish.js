@@ -1,6 +1,8 @@
-window.elfish = {
-    numberOfEfforts: 2,
-    species: []
+function initiateStorage() {
+    window.elfish = {
+	numberOfEfforts: 2,
+	species: []
+    }
 }
 
 function store() {
@@ -31,7 +33,7 @@ function reloadDataIntoDom() {
     console.log(window.elfish);
     
     console.log("Emptying .app ... ");
-    $(".app").empty();
+    $(".specie").remove();
     
     console.log("Populating ... ");
     for (var s = 0; s < window.elfish.species.length; s++) {
@@ -66,8 +68,11 @@ function clearLocalStorage() {
     
     // TODO make backup copy
     
+    // should we export to CSV?
+    
     window.localStorage.removeItem("elfish");
-    doUpdate();
+    initiateStorage();
+    $(".specie").remove();
 }
 
 
@@ -367,6 +372,7 @@ function run () {
 	    console.log("+species-id: " + specieId);
 	    
 	    createNewEffort("", specieId);
+	    store();
 	});
 
     $( ".app" )
@@ -375,12 +381,14 @@ function run () {
 	    var jqPar = $(evtObj.target).parent(".specie");
 	    var specieId = jqPar.data("species-id");
 	    createNewGroup(specieId);
+	    store();
 	});
 
     $( ".app" )
 	.delegate("button[data-button='species']", "click", function (evtObj) {
 	    console.log("new species");
 	    createNewSpecies();
+	    store();
 	});
     
 
@@ -403,6 +411,7 @@ function run () {
 	    
 	    console.log("Updating " + sp + "," + gr + "," + ef + " to " + header);
 	    $(evtObj.target).attr('contenteditable','false');
+	    store();
 	});
     
     $(document).ready(function() {
@@ -424,6 +433,7 @@ function run () {
 		var header = $(evtObj.target).text(old);
 	    }
 	});
+	store();
     });
     
     $( ".app" )
@@ -438,22 +448,30 @@ function run () {
 	    window.elfish.species[s].groups[g].efforts[e].value = val;
 	    
 	    recomputeValues(s,g,e);
+	    store();
 	});
 }
 
 function updateSummary (sp,gr) {
-    var elt = document.getElementById("group-summary-" + gr);
+    var elt = $(".group-summary[data-group-id="+gr+"][data-specie-id="+sp+"]")[0];
     
     var groups = window.elfish.species[sp].groups[gr];
     var numOfEfforts = groups.efforts.length;
     var totalCatch = 0;
+
+    var arr = [];
+
     for (var e = 0; e < numOfEfforts; e++) {
 	console.log("totalCatch += " + groups.efforts[e].value);
-	totalCatch += parseInt(groups.efforts[e].value);
+	var eVal = parseInt(groups.efforts[e].value);
+	totalCatch += eVal;
+	arr.push(eVal);
     }
     
+    est = getEstimateString(arr);
+    
     var data = "<p>Efforts = " + numOfEfforts + "</p>";
-    data += "<p>EST = " + "est" + "</p>"; // TODO get arr
+    data += "<p>N̂ = " + est + "</p>";
     data += "<p>T = " + totalCatch + "</p>";
     
     console.log("Set summary for " + gr);
@@ -464,9 +482,9 @@ function updateSummary (sp,gr) {
 
 // same-ish as window.onload
 $(function () {
-    
     if (window.localStorage.getItem("elfish") === null) {
 	console.log("No local storage, starting fresh ... ");
+	initiateStorage();
     } else {
 	console.log("Has local storage, reloading ... ");
 	retrieve();
