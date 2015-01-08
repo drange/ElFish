@@ -1,14 +1,16 @@
 {
-    "name": "elfish",
-    "description": "OKOK",
-    "homepage": "http://sessility.com",
-    "author": "Sessility <in@sessility.com>",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/drange/ElFish.git"
-    },
-    "version": "0.0.1",
-    "dependencies": {
-        "bower": "1.3"
-    }
+  "name": "elfish",
+  "description": "OKOK",
+  "homepage": "http://sessility.com",
+  "author": "Sessility <in@sessility.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/drange/ElFish.git"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "bower": "1.3",
+    "grunt": "0.4.5",
+    "grunt-cli": "^0.1.13"
+  }
 }
