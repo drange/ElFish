@@ -1,0 +1,25 @@
+body {
+    background-color: #E8EDF7;
+
+}
+
+.specie {
+    background-color: #F2DEA2;
+}
+
+.group {
+    background-color: #F2B988;
+    overflow: auto;
+}
+
+.group-efforts {
+    width: 10000px;
+    font-size: 0;
+}
+
+.effort {
+    background-color: #F29D7E;
+    width: 200px;
+    display: inline-block;
+    font-size: 16pt;
+}

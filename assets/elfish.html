@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="elfish.css">
     -->
     <link rel="stylesheet" type="text/css" href="css/pure.min.css">
+    <link rel="stylesheet" type="text/css" href="css/elfish.css">
 
     <script src="scripts/jquery.min.js"></script>
     <script src="scripts/underscore.min.js"></script>
@@ -36,51 +37,50 @@
 
 
     <script type="text/html" id="template-group">
-      <div class="group"
+    <div class="group"
 	   data-specie-id="{{group.specieid}}"
 	   data-id="group-{{group.id}}">
-	<h3 class="editable">{{group.title}} {{group.id}}</h3>
-	<div id="group-summary-{{group.id}}"
-	     class="group-summary"
-	     data-group-id="{{group.id}}"
-	     data-specie-id="{{group.specieid}}"
-	     >Summary</div>
-	<div class="group-efforts"
-	     data-specie-id="{{group.specieid}}"
-	     data-id="group-{{group.id}}">
-	</div>
-	<button class="effort-button" data-button="effort">+</button>
-      </div>
+	   <h3 class="editable">{{group.title}} {{group.id}}</h3>
+    	<div id="group-summary-{{group.id}}"
+    	   class="group-summary"
+    	   data-group-id="{{group.id}}"
+    	   data-specie-id="{{group.specieid}}">
+           Summary
+        </div>
+        <div class="group-efforts"
+	       data-specie-id="{{group.specieid}}"
+	       data-id="group-{{group.id}}">
+	   </div>
+    </div>
     </script>
 
     <script type="text/html" id="template-effort">
-      <div class="effort"
-	   id="effort-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
-	<h4 class="editable"
-	    data-effort-header-specie="{{effort.specieid}}"
-	    data-effort-header-group="{{effort.groupid}}"
-	    data-effort-header-effort="{{effort.id}}">
-	  {{effort.title}} {{effort.id}}
-	</h4>
-	<!-- input has id: ci-1-2-3 for sp 1, gr 2, eff 3, where ci is
-	"catch input" -->
-	<input type="number" min="0"
-	       class="catch-input"
-	       id="ci-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}"
-	       data-input-species="{{effort.specieid}}"
-	       data-input-group="{{effort.groupid}}"
-	       data-input-effort="{{effort.id}}"
-	       value="{{effort.value}}" />
-	<div class="estimate" id="est-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
-	  {{effort.est}}
-	</div>
-	<div class="ke" id="ke-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
-	  {{effort.ke}}
-	</div>
-	<div class="te" id="te-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
-	  {{effort.te}}
-	</div>
-      </div>
+    <div class="effort"
+        id="effort-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
+        <h4 class="editable"
+            data-effort-header-specie="{{effort.specieid}}"
+            data-effort-header-group="{{effort.groupid}}"
+            data-effort-header-effort="{{effort.id}}">
+            {{effort.title}} {{effort.id}}
+        </h4>
+        <!-- input has id: ci-1-2-3 for sp 1, gr 2, eff 3, where ci is "catch input" -->
+        <input type="number" min="0"
+            class="catch-input"
+            id="ci-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}"
+            data-input-species="{{effort.specieid}}"
+            data-input-group="{{effort.groupid}}"
+            data-input-effort="{{effort.id}}"
+            value="{{effort.value}}" />
+        <div class="estimate" id="est-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
+            {{effort.est}}
+        </div>
+        <div class="ke" id="ke-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
+            {{effort.ke}}
+        </div>
+        <div class="te" id="te-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
+            {{effort.te}}
+        </div>
+    </div>
     </script>
 
   </head>
