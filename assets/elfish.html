@@ -6,13 +6,20 @@
     <!--
     <link rel="stylesheet" type="text/css" href="elfish.css">
     -->
+
+    <!-- Pure -->
     <link rel="stylesheet" type="text/css" href="css/pure.min.css">
+
     <link rel="stylesheet" type="text/css" href="css/elfish.css">
 
     <script src="scripts/jquery.min.js"></script>
     <script src="scripts/underscore.min.js"></script>
     <script src="scripts/handlebars.min.js"></script>
     <script src="scripts/jquery.loadFromTemplate.min.js"></script>
+
+    <script>
+        window.efGUI = {};
+    </script>
 
     <script src="scripts/elfishMath.js"></script>
     <script src="scripts/elfishUtil.js"></script>
@@ -65,6 +72,7 @@
         </h4>
         <!-- input has id: ci-1-2-3 for sp 1, gr 2, eff 3, where ci is "catch input" -->
         <input type="number" min="0"
+            placeholder="caught"
             class="catch-input"
             id="ci-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}"
             data-input-species="{{effort.specieid}}"
@@ -86,7 +94,7 @@
   </head>
   <body>
     <div class="app">
-      <h1>ElFish</h1>
+      <h1 class="app-logo">ElFish</h1>
       <button data-button="species">Add species</button>
     </div>
 
