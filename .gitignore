@@ -19,6 +19,7 @@ gen/
 res/
 
 *.min.js
+*.min.css
 # Deps
 bower_components
 node_modules

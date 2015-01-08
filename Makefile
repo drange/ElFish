@@ -13,7 +13,7 @@ install_pure:
 
 css_build:
 	cd ./bower_components/purecss/ && ./node_modules/grunt-cli/bin/grunt
-	-cp ./bower_components/purecss/build/pure-min.css assets/css/pure.min.js
+	-cp ./bower_components/purecss/build/pure-min.css assets/css/pure.min.css
 
 
 js_build:
