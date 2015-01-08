@@ -1,7 +1,8 @@
 function initiateStorage() {
     window.elfish = {
         numberOfEfforts: 2,
-        species: []
+        species: [],
+        visibleSpecies: null
     };
 }
 
@@ -29,7 +30,6 @@ function retrieve() {
  *
  */
 function reloadDataIntoDom() {
-
     console.log(window.elfish);
 
     console.log("Emptying .app ... ");
@@ -37,25 +37,30 @@ function reloadDataIntoDom() {
 
     console.log("Populating ... ");
     for (var s = 0; s < window.elfish.species.length; s++) {
+
         var sName = window.elfish.species[s].name;
-        domSpecie(s, sName);
+        efGUI.domSpecie(s, sName);
         console.log("Added specie " + s + ": " + sName);
 
         var groups = window.elfish.species[s].groups;
 
         for (var g = 0; g < groups.length; g++) {
             var gName = groups[g].name;
-            domGroup(g, gName, s);
+            efGUI.domGroup(g, gName, s);
             console.log("\tAdded group " + g + ": " + gName);
 
             for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
                 var eName = groups[g].efforts[e].name;
                 var value =  groups[g].efforts[e].value;
-                domEffort(e, eName, g, s, value);
+                efGUI.domEffort(e, eName, g, s, value);
                 console.log("\t\tAdded effort " + e + ": " + eName + " (" + value + ")");
                 recomputeValues(s,g,e);
             }
         }
+    }
+
+    if (window.elfish.species.length) {
+        efGUI.showSpecie(window.elfish.visibleSpecies || 0);
     }
 }
 
@@ -85,7 +90,7 @@ function doUpdate() {
     // $('.specie').remove();
 
     // for (var s = 0; s < species.length; s++) {
-    //     domSpecie(s, window.elfish.species[s].name);
+    //     efGUI.domSpecie(s, window.elfish.species[s].name);
 
     //     var specieName = species[s].name;
     //     var groups = species[s].groups;
@@ -95,7 +100,7 @@ function doUpdate() {
     //         var groupName = groups[g].name;
     //         var efforts = groups[g].efforts;
 
-    //         domGroup(g, groupName, s);
+    //         efGUI.domGroup(g, groupName, s);
 
 
     //         for (var e = 0; e < efforts.length; e++) {
@@ -103,7 +108,7 @@ function doUpdate() {
     //         var effortName = efforts[e].name;
     //         var value = efforts[e].value;
 
-    //         domEffort(e, effortName, g, s, value);
+    //         efGUI.domEffort(e, effortName, g, s, value);
 
     //         console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
     //         }
@@ -137,8 +142,10 @@ function getInput(s,g,e) {
 
 function createNewSpecies () {
     // TODO fix species title/name
-    window.elfish.species.push({name: "Art", groups: []});
-    domSpecie(window.elfish.species.length-1, "Art");
+    window.elfish.species.push({name: "Art", groups: [], isVisible: true});
+    var sId = window.elfish.species.length-1;
+    efGUI.domSpecie(sId, "Art", true);
+    efGUI.showSpecie(sId);
 }
 
 function createNewGroup (specie) {
@@ -155,7 +162,7 @@ function createNewGroup (specie) {
 
     groups.push({name:"Group " + newGroupId, efforts: []});
 
-    domGroup(newGroupId, "Gruppe", specie);
+    efGUI.domGroup(newGroupId, "Gruppe", specie);
 
     console.log("\tgroups: " + groups);
 
@@ -234,7 +241,7 @@ function createNewEffortForGroup (effortName, groupId, speciesId) {
 
     group.efforts.push({name: effortName, value: ""});
 
-    domEffort(group.efforts.length-1, effortName, groupId, speciesId);
+    efGUI.domEffort(group.efforts.length-1, effortName, groupId, speciesId);
 }
 
 
@@ -414,7 +421,6 @@ function run () {
         store();
     });
 
-    $(document).ready(function() {
     $('.app').on("keydown",'.editable', function(evtObj) {
         if (evtObj.key == "Enter") {
             console.log('disable edit for' + evtObj.target);
@@ -433,8 +439,8 @@ function run () {
             var header = $(evtObj.target).text(old);
         }
     });
+
     store();
-    });
 
     $( ".app" )
     .delegate(".catch-input", "change", function (evtObj) {

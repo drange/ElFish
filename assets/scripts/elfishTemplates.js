@@ -1,4 +1,4 @@
-function domSpecie (specieId, specieName) {
+efGUI.domSpecie = function (specieId, specieName) {
     $(".app:first").loadFromTemplate({
         template:$("#template-specie").html(),
         data: {
@@ -9,9 +9,9 @@ function domSpecie (specieId, specieName) {
         }
     });
     console.log("added new species, " + specieId, ": " + specieName);
-}
+};
 
-function domGroup (groupId, groupName, specieId) {
+efGUI.domGroup = function (groupId, groupName, specieId) {
     var selector = ".specie-groups[data-species-id=" + specieId + "]";
     $(selector).loadFromTemplate({
         template:$("#template-group").html(),
@@ -19,35 +19,48 @@ function domGroup (groupId, groupName, specieId) {
             group: {
                 id: groupId,
                 title: groupName,
-		specieid: specieId
-	    }
+                specieid: specieId
+            }
         }
     });
-}
+};
 
 
-function domEffort (effortId, effortName, groupId, specieId, value) {
-    console.log("domEffort(" + effortId + "," + effortName + "," + 
-		groupId + "," + specieId + "," + value + ")");
-    
+efGUI.domEffort = function (effortId, effortName, groupId, specieId, value) {
+    console.log("domEffort(" + effortId + "," + effortName + "," +
+        groupId + "," + specieId + "," + value + ")");
+
     if (typeof value === "undefined") {
-	value = "";
+    value = "";
     }
-    
+
     $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]")
-	.loadFromTemplate({
-	    template:$("#template-effort").html(),
-	    data: {
-		effort: {
-		    id: effortId,
-		    title: effortName,
-		    groupid: groupId,
-		    specieid: specieId,
-		    est: "----",
-		    ke: "----",
-		    te: "----",
-		    value: value
-		}
-	    }
-	});
-}
+    .loadFromTemplate({
+        template:$("#template-effort").html(),
+        data: {
+            effort: {
+                id: effortId,
+                title: effortName,
+                groupid: groupId,
+                specieid: specieId,
+                est: "----",
+                ke: "----",
+                te: "----",
+                value: value
+            }
+        }
+    });
+};
+
+efGUI.showSpecie = function (specieId) {
+    console.log("showSpecie", specieId);
+    var s = $(".specie[data-species-id=" + specieId + "]:first");
+
+    $(".specie").removeClass("visible");
+
+    if (s.length === 0) {
+        throw new Error("Cannot show specie " + specieId + ", does not exist");
+    }
+    s.addClass("visible");
+    window.elfish.visibleSpecies = specieId;
+};
