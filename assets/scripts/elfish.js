@@ -145,7 +145,7 @@ function getInput(s,g,e) {
 
 function createNewSpecies () {
     // TODO fix species title/name
-    window.elfish.species.push({name: "Art", groups: [], isVisible: true});
+    window.elfish.species.push({name: "Art", groups: []});
     var sId = window.elfish.species.length-1;
     efGUI.domSpecie(sId, "Art", true);
     efGUI.renderTabs();
