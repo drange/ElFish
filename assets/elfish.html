@@ -4,35 +4,35 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <!--
 	<link rel="stylesheet" type="text/css" href="elfish.css">
 	-->
-    
+
     <!-- Pure -->
     <link rel="stylesheet" type="text/css" href="css/pure.min.css">
-    
+
     <link rel="stylesheet" type="text/css" href="css/elfish.css">
-    
+
     <script src="scripts/jquery.min.js"></script>
     <script src="scripts/underscore.min.js"></script>
     <script src="scripts/handlebars.min.js"></script>
     <script src="scripts/jquery.loadFromTemplate.min.js"></script>
-    
+
     <script>
       window.efGUI = {};
     </script>
-    
+
     <script src="scripts/elfishMath.js"></script>
     <script src="scripts/elfishUtil.js"></script>
-    
+
     <!-- comment out before ship -->
     <script src="scripts/elfishUnitTest.js"></script>
-    
+
     <script src="scripts/elfishAndroid.js"></script>
     <script src="scripts/elfishTemplates.js"></script>
     <script src="scripts/elfish.js"></script>
-    
+
     <!-- TODO insert specie -->
     <script type="text/html" id="template-specie">
       <div class="specie" data-species-id="{{specie.id}}">
@@ -47,16 +47,16 @@
 	<button data-button="group">New group</button>
       </div>
     </script>
-    
+
     <script type="text/html" id="template-tabs">
       <ul class="tabs-list">
         {{#each species}}
-        <li data-specie-id="{{@index}}"><a>{{this.name}} {{@index}}</a></li>
+        <li data-specie-id="{{@index}}"><a>{{this.name}}</a></li>
         {{/each}}
         <li><button data-button="species">+</button></li>
       </ul>
     </script>
-    
+
     <script type="text/html" id="template-group">
       <div class="group"
 	   data-specie-id="{{group.specieid}}"
@@ -80,7 +80,7 @@
 	<button class="effort-button" data-button="effort">+</button>
       </div>
     </script>
-    
+
     <script type="text/html" id="template-effort">
       <div class="effort"
            id="effort-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
@@ -110,7 +110,7 @@
         </div>
       </div>
     </script>
-    
+
   </head>
   <body>
     <div class="app">
@@ -118,26 +118,26 @@
       <div class="tabs"></div>
       <div class="data"></div>
     </div>
-    
+
     <div class="footer">
       <!-- / JavaScript / Android bindings -->
       <h1>&nbsp;</h1>
       <hr />
       <h1>Management</h1>
-      
+
       <input type="button" value="Copy to clipboard"
 	     onClick="androidCopy()" />
-      
+
       <input type="button" value="Share"
 	     onClick="androidShare()" />
-      
+
       <input type="button" value="Write to file"
 	     onClick="androidWrite()" />
-      
+
       <!-- Local Storage management -->
       <input type="button" value="Clear"
 	     onClick="clearLocalStorage()" />
-      
+
       <input type="button" value="Update"
 	     onClick="doUpdate()" />
     </div>

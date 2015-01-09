@@ -31,24 +31,24 @@ function retrieve() {
  */
 function reloadDataIntoDom() {
     console.log(window.elfish);
-    
+
     console.log("Emptying .app ... ");
     $(".specie").remove();
-    
+
     console.log("Populating ... ");
     for (var s = 0; s < window.elfish.species.length; s++) {
-	
+
         var sName = window.elfish.species[s].name;
         efGUI.domSpecie(s, sName);
         console.log("Added specie " + s + ": " + sName);
-	
+
         var groups = window.elfish.species[s].groups;
-	
+
         for (var g = 0; g < groups.length; g++) {
             var gName = groups[g].name;
             efGUI.domGroup(g, gName, s);
             console.log("\tAdded group " + g + ": " + gName);
-	    
+
             for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
                 var eName = groups[g].efforts[e].name;
                 var value =  groups[g].efforts[e].value;
@@ -58,9 +58,9 @@ function reloadDataIntoDom() {
             }
         }
     }
-    
+
     efGUI.renderTabs();
-    
+
     if (window.elfish.species.length) {
         efGUI.showSpecie(window.elfish.visibleSpecies || 0);
     }
@@ -409,52 +409,51 @@ function run () {
         $(evtObj.target).attr('contenteditable','true');
         $(evtObj.target).focus();
     });
-    
-    
-    
+
+
+
     //
     // Editing is done on header
     //
     $( ".app" )
 	.delegate(".editable", "blur", function (evtObj) {
-	    $(evtObj.target).attr('contenteditable','false');
-	    
-            console.log("Edit done on: " + $(evtObj.target).attr("data-edit-header"));
-	    
-	    switch ($(evtObj.target).attr("data-edit-header")) {
-	    case "effort":
-		var sp = parseInt($(evtObj.target).attr("data-effort-header-specie"), 10);
-		var gr = parseInt($(evtObj.target).attr("data-effort-header-group"), 10);
-		var ef = parseInt($(evtObj.target).attr("data-effort-header-effort"), 10);
-		
-		var header = $(evtObj.target).text();
-		window.elfish.species[sp].groups[gr].efforts[ef].name = header;
-		break;
-		
-		
-	    case "group":
-		var sp = parseInt($(evtObj.target).attr("data-group-header-specie"), 10);
-		var gr = parseInt($(evtObj.target).attr("data-group-header-group"), 10);
-		
-		var header = $(evtObj.target).text();
-		window.elfish.species[sp].groups[gr].name = header;
-		break;
-		
-		
-	    case "specie":
-		var sp = parseInt($(evtObj.target).attr("data-specie-header-specie"), 10);
-		
-		var header = $(evtObj.target).text();
-		window.elfish.species[sp].name = header;
-		break;
-	    }
-	    
-            store();
+        $(evtObj.target).attr('contenteditable','false');
+
+        console.log("Edit done on: " + $(evtObj.target).attr("data-edit-header"));
+
+        switch ($(evtObj.target).attr("data-edit-header")) {
+        case "effort":
+            var sp = parseInt($(evtObj.target).attr("data-effort-header-specie"), 10);
+            var gr = parseInt($(evtObj.target).attr("data-effort-header-group"), 10);
+            var ef = parseInt($(evtObj.target).attr("data-effort-header-effort"), 10);
+
+            var header = $(evtObj.target).text();
+            window.elfish.species[sp].groups[gr].efforts[ef].name = header;
+            break;
+
+        case "group":
+            var sp = parseInt($(evtObj.target).attr("data-group-header-specie"), 10);
+            var gr = parseInt($(evtObj.target).attr("data-group-header-group"), 10);
+
+            var header = $(evtObj.target).text();
+            window.elfish.species[sp].groups[gr].name = header;
+            break;
+
+        case "specie":
+            var sp = parseInt($(evtObj.target).attr("data-specie-header-specie"), 10);
+
+            var header = $(evtObj.target).text();
+            window.elfish.species[sp].name = header;
+            efGUI.renderTabs();
+            efGUI.showSpecie(sp);
+            break;
+        }
+        store();
 	});
-    
-    
-    
-    
+
+
+
+
     $('.app').on("keydown",'.editable', function(evtObj) {
         if (evtObj.key == "Enter") {
             console.log('disable edit for' + evtObj.target);
