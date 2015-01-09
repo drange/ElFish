@@ -59,6 +59,8 @@ function reloadDataIntoDom() {
         }
     }
 
+    efGUI.renderTabs();
+
     if (window.elfish.species.length) {
         efGUI.showSpecie(window.elfish.visibleSpecies || 0);
     }
@@ -78,6 +80,7 @@ function clearLocalStorage() {
     window.localStorage.removeItem("elfish");
     initiateStorage();
     $(".specie").remove();
+    efGUI.renderTabs();
 }
 
 
@@ -146,6 +149,7 @@ function createNewSpecies () {
     var sId = window.elfish.species.length-1;
     efGUI.domSpecie(sId, "Art", true);
     efGUI.showSpecie(sId);
+    efGUI.renderTabs();
 }
 
 function createNewGroup (specie) {
@@ -455,6 +459,12 @@ function run () {
 
         recomputeValues(s,g,e);
         store();
+    });
+
+    $( ".app")
+    .delegate(".tabs-list a", "click", function (e) {
+        var specieId = $(e.target).parent().data("specie-id");
+        efGUI.showSpecie(specieId);
     });
 }
 

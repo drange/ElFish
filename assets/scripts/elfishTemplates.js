@@ -30,12 +30,14 @@ efGUI.domEffort = function (effortId, effortName, groupId, specieId, value) {
     console.log("domEffort(" + effortId + "," + effortName + "," +
         groupId + "," + specieId + "," + value + ")");
 
+    var gEfforts = $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]");
+
     if (typeof value === "undefined") {
-    value = "";
+        value = "";
     }
 
-    $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]")
-    .loadFromTemplate({
+
+    gEfforts.loadFromTemplate({
         template:$("#template-effort").html(),
         data: {
             effort: {
@@ -50,6 +52,8 @@ efGUI.domEffort = function (effortId, effortName, groupId, specieId, value) {
             }
         }
     });
+
+    gEfforts.width(gEfforts.children(".effort").size() * 230);
 };
 
 efGUI.showSpecie = function (specieId) {
@@ -62,5 +66,21 @@ efGUI.showSpecie = function (specieId) {
         throw new Error("Cannot show specie " + specieId + ", does not exist");
     }
     s.addClass("visible");
+
+    $(".tabs-list li").removeClass("active");
+    $(".tabs-list li[data-specie-id="+specieId+"]:first").addClass("active");
+
     window.elfish.visibleSpecies = specieId;
+    store();
+};
+
+efGUI.renderTabs = function () {
+    var t = $(".tabs:first");
+    t.empty();
+    t.loadFromTemplate({
+        template: $("#template-tabs").html(),
+        data: {
+            species: window.elfish.species
+        }
+    });
 };

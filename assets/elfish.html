@@ -33,15 +33,23 @@
 
     <!-- TODO insert specie -->
     <script type="text/html" id="template-specie">
-      <div class="specie" data-species-id="{{specie.id}}">
-	<h2 class="editable">{{specie.title}} {{specie.id}}</h2>
-	<div class="specie-groups"
-	     data-species-id="{{specie.id}}">
-	</div>
-	<button data-button="group">New group</button>
-      </div>
+    <div class="specie" data-species-id="{{specie.id}}">
+        <h2 class="editable">{{specie.title}} {{specie.id}}</h2>
+	    <div class="specie-groups"
+	       data-species-id="{{specie.id}}">
+	    </div>
+	   <button data-button="group">New group</button>
+    </div>
     </script>
 
+    <script type="text/html" id="template-tabs">
+    <ul class="tabs-list">
+        {{#each species}}
+        <li data-specie-id="{{@index}}"><a>{{this.name}} {{@index}}</a></li>
+        {{/each}}
+        <li><button data-button="species">+</button></li>
+    </ul>
+    </script>
 
     <script type="text/html" id="template-group">
     <div class="group"
@@ -58,6 +66,7 @@
 	       data-specie-id="{{group.specieid}}"
 	       data-id="group-{{group.id}}">
 	   </div>
+       <button class="effort-button" data-button="effort">+</button>
     </div>
     </script>
 
@@ -95,7 +104,7 @@
   <body>
     <div class="app">
       <h1 class="app-logo">ElFish</h1>
-      <button data-button="species">Add species</button>
+      <div class="tabs"></div>
     </div>
 
     <div class="footer">
