@@ -71,13 +71,20 @@ efGUI.domEffort = function (effortId, effortName, groupId, specieId, value, effo
             est: "----",
             ke: "----",
             te: "----",
-            value: value
+            value: value,
+            extraClasses: ["new-effort"]
         }
     };
+    var jqEffort = $(t(d));
 
     // renders template and makes jquery outta it,
     // then inserts it before a placeholder
-    $(t(d)).insertBefore(placeholder);
+    jqEffort.insertBefore(placeholder);
+
+    window.setTimeout(function () {
+        var d = jqEffort;
+        d.removeClass("new-effort");
+    }, 1);
 
     // TODO: un hard code this value
     gEfforts.width(gEfforts.children(".effort").size() * 230);
