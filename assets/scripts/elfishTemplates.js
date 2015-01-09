@@ -1,5 +1,5 @@
 efGUI.domSpecie = function (specieId, specieName) {
-    $(".app:first").loadFromTemplate({
+    $(".data:first").loadFromTemplate({
         template:$("#template-specie").html(),
         data: {
             specie: {
@@ -70,6 +70,7 @@ efGUI.showSpecie = function (specieId) {
     $(".tabs-list li").removeClass("active");
     $(".tabs-list li[data-specie-id="+specieId+"]:first").addClass("active");
 
+    // TODO: should not be done here, move to controller
     window.elfish.visibleSpecies = specieId;
     store();
 };

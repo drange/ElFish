@@ -148,8 +148,8 @@ function createNewSpecies () {
     window.elfish.species.push({name: "Art", groups: [], isVisible: true});
     var sId = window.elfish.species.length-1;
     efGUI.domSpecie(sId, "Art", true);
-    efGUI.showSpecie(sId);
     efGUI.renderTabs();
+    efGUI.showSpecie(sId);
 }
 
 function createNewGroup (specie) {
@@ -501,6 +501,7 @@ $(function () {
     if (window.localStorage.getItem("elfish") === null) {
         console.log("No local storage, starting fresh ... ");
         initiateStorage();
+        efGUI.renderTabs();
     } else {
         console.log("Has local storage, reloading ... ");
         retrieve();
