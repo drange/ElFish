@@ -1,6 +1,7 @@
 body {
     padding: 15px;
     overflow-x: hidden;
+    font-size: 16pt;
 }
 
 h1, h2, h3, h4, h5, h6, p {
@@ -12,7 +13,13 @@ h1 {
 }
 
 input {
-    padding: 3px 5px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.editable {
+    padding: 15px 5px;
 }
 
 .tabs-list {
@@ -25,7 +32,7 @@ input {
 }
 
 .tabs-list .active {
-    padding: 5px;
+    padding: 15px;
     background: #ccc;
 }
 
@@ -50,7 +57,7 @@ input {
 }
 
 .group {
-
+    margin-bottom: 30px;
 }
 
 
@@ -60,6 +67,10 @@ input {
 
 .group-efforts-inner {
     font-size: 0;
+}
+
+.group-summary {
+    margin: 5px;
 }
 
 .effort {
