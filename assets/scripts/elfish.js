@@ -37,23 +37,19 @@ function reloadDataIntoDom() {
 
     console.log("Populating ... ");
     for (var s = 0; s < window.elfish.species.length; s++) {
-
         var sName = window.elfish.species[s].name;
         efGUI.domSpecie(s, sName);
-        console.log("Added specie " + s + ": " + sName);
 
         var groups = window.elfish.species[s].groups;
 
         for (var g = 0; g < groups.length; g++) {
             var gName = groups[g].name;
             efGUI.domGroup(g, gName, s);
-            console.log("\tAdded group " + g + ": " + gName);
 
             for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
                 var eName = groups[g].efforts[e].name;
                 var value =  groups[g].efforts[e].value;
                 efGUI.domEffort(e, eName, g, s, value);
-                console.log("\t\tAdded effort " + e + ": " + eName + " (" + value + ")");
                 recomputeValues(s,g,e);
             }
         }
@@ -83,59 +79,19 @@ function clearLocalStorage() {
     efGUI.renderTabs();
 }
 
-
-/**
- * Takes data from elfish and puts into DOM
- */
-function doUpdate() {
-    // var species = window.elfish.species;
-
-    // $('.specie').remove();
-
-    // for (var s = 0; s < species.length; s++) {
-    //     efGUI.domSpecie(s, window.elfish.species[s].name);
-
-    //     var specieName = species[s].name;
-    //     var groups = species[s].groups;
-
-
-    //     for (var g = 0; g < groups.length; g++) {
-    //         var groupName = groups[g].name;
-    //         var efforts = groups[g].efforts;
-
-    //         efGUI.domGroup(g, groupName, s);
-
-
-    //         for (var e = 0; e < efforts.length; e++) {
-
-    //         var effortName = efforts[e].name;
-    //         var value = efforts[e].value;
-
-    //         efGUI.domEffort(e, effortName, g, s, value);
-
-    //         console.log("update: " + specieName + " " + groupName + " " + effortName + " " + value);
-    //         }
-    //     }
-    // }
-}
-
-
 function getInputValue(sp, gr, ef) {
     var elt = getInput(sp,gr,ef);
 
     retVal = NaN;
     if (elt !== null) {
         retVal = elt.value;
-        console.log("input field " + sp + "," + gr + "," + ef + " → " + elt.value);
     }
-    console.log("getInputValue(" + sp + "," + gr + "," + ef + ") → " + retVal);
     return retVal;
 }
 
 
 function getInput(s,g,e) {
     var postfix = "-" + s + "-" + g + "-" + e;
-    console.log("postfix = " + postfix);
 
     // TODO use JQuery instead of postfix on id of dom elts
     var key = "ci" + postfix;
@@ -374,21 +330,14 @@ function recomputeValues(s,g,e) {
 function run () {
     $( ".app" )
     .delegate("button[data-button='effort']", "click", function (evtObj) {
-        console.log("new effort");
-
         var jqPar = $(evtObj.target).parent(".specie");
-        console.log("+parent: " + jqPar);
-
         var specieId = parseInt(jqPar.data("species-id"), 10);
-        console.log("+species-id: " + specieId);
-
         createNewEffort("", specieId);
         store();
     });
 
     $( ".app" )
     .delegate("button[data-button='group']", "click", function (evtObj) {
-        console.log("new group");
         var jqPar = $(evtObj.target).parent(".specie");
         var specieId = jqPar.data("species-id");
         createNewGroup(specieId);
@@ -397,7 +346,6 @@ function run () {
 
     $( ".app" )
     .delegate("button[data-button='species']", "click", function (evtObj) {
-        console.log("new species");
         createNewSpecies();
         store();
     });
@@ -507,7 +455,6 @@ function updateSummary (sp,gr) {
     var arr = [];
 
     for (var e = 0; e < numOfEfforts; e++) {
-        console.log("totalCatch += " + groups.efforts[e].value);
         var eVal = parseInt(groups.efforts[e].value, 10);
         totalCatch += eVal;
         arr.push(eVal);
@@ -518,8 +465,6 @@ function updateSummary (sp,gr) {
     var data = "<p>Efforts = " + numOfEfforts + "</p>";
     data += "<p>N̂ = " + est + "</p>";
     data += "<p>T = " + totalCatch + "</p>";
-
-    console.log("Set summary for " + gr);
 
     elt.innerHTML = data;
 }
