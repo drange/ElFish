@@ -52,7 +52,7 @@ function reloadDataIntoDom() {
             for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
                 var eName = groups[g].efforts[e].name;
                 var value =  groups[g].efforts[e].value;
-                efGUI.domEffort(e, eName, g, s, value);
+                efGUI.domEffort(e, eName, g, s, value, groups[g].efforts);
                 console.log("\t\tAdded effort " + e + ": " + eName + " (" + value + ")");
                 recomputeValues(s,g,e);
             }
@@ -245,7 +245,7 @@ function createNewEffortForGroup (effortName, groupId, speciesId) {
 
     group.efforts.push({name: effortName, value: ""});
 
-    efGUI.domEffort(group.efforts.length-1, effortName, groupId, speciesId);
+    efGUI.domEffort(group.efforts.length-1, effortName, groupId, speciesId, group.efforts);
 }
 
 
@@ -373,10 +373,10 @@ function recomputeValues(s,g,e) {
 
 function run () {
     $( ".app" )
-    .delegate("button[data-button='effort']", "click", function (evtObj) {
+    .delegate(".placeholder", "click", function (evtObj) {
         console.log("new effort");
 
-        var jqPar = $(evtObj.target).parent(".specie");
+        var jqPar = $(evtObj.target).parent(":first");
         console.log("+parent: " + jqPar);
 
         var specieId = parseInt(jqPar.data("species-id"), 10);

@@ -26,33 +26,60 @@ efGUI.domGroup = function (groupId, groupName, specieId) {
 };
 
 
-efGUI.domEffort = function (effortId, effortName, groupId, specieId, value) {
+efGUI.domEffort = function (effortId, effortName, groupId, specieId, value, efforts) {
     console.log("domEffort(" + effortId + "," + effortName + "," +
         groupId + "," + specieId + "," + value + ")");
 
-    var gEfforts = $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"]");
+    var gEfforts = $(".group-efforts[data-id=group-"+ groupId +"][data-specie-id="+specieId+"] .group-efforts-inner");
+    var placeholder = gEfforts.children(".placeholder");
 
     if (typeof value === "undefined") {
         value = "";
     }
 
-
-    gEfforts.loadFromTemplate({
-        template:$("#template-effort").html(),
-        data: {
-            effort: {
-                id: effortId,
-                title: effortName,
-                groupid: groupId,
-                specieid: specieId,
-                est: "----",
-                ke: "----",
-                te: "----",
-                value: value
+    // check if there's an effort placeholder at the end
+    // add it if it does not exist
+    if (placeholder.length === 0) {
+        console.log("Found no placeholder in", groupId, "for specie", specieId, "so adding it.");
+        gEfforts.loadFromTemplate({
+            template:$("#template-effort").html(),
+            data: {
+                effort: {
+                    id: "",
+                    title: "New effort",
+                    groupid: groupId,
+                    specieid: specieId,
+                    est: "----",
+                    ke: "----",
+                    te: "----",
+                    value: "",
+                    extraClasses: ["placeholder"]
+                }
             }
-        }
-    });
+        });
+        placeholder = gEfforts.children(".placeholder");
+    }
 
+    // insert new effort before placeholder
+    var t = Handlebars.compile($("#template-effort").html());
+    var d = {
+        effort: {
+            id: effortId,
+            title: effortName,
+            groupid: groupId,
+            specieid: specieId,
+            est: "----",
+            ke: "----",
+            te: "----",
+            value: value
+        }
+    };
+
+    // renders template and makes jquery outta it,
+    // then inserts it before a placeholder
+    $(t(d)).insertBefore(placeholder);
+
+    // TODO: un hard code this value
     gEfforts.width(gEfforts.children(".effort").size() * 230);
 };
 

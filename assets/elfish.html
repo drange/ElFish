@@ -58,31 +58,31 @@
     </script>
 
     <script type="text/html" id="template-group">
-      <div class="group"
-	   data-specie-id="{{group.specieid}}"
-	   data-id="group-{{group.id}}">
-	<h3 class="editable"
-	    data-edit-header="group"
-	    data-group-header-specie="{{group.specieid}}"
+    <div class="group"
+        data-specie-id="{{group.specieid}}"
+        data-id="group-{{group.id}}">
+        <h3 class="editable"
+            data-edit-header="group"
+            data-group-header-specie="{{group.specieid}}"
             data-group-header-group="{{group.id}}">
-	  {{group.title}} {{group.id}}
-	</h3>
-    	<div id="group-summary-{{group.id}}"
-    	     class="group-summary"
-    	     data-group-id="{{group.id}}"
-    	     data-specie-id="{{group.specieid}}">
-          Summary
+            {{group.title}} {{group.id}}
+        </h3>
+        <div id="group-summary-{{group.id}}"
+            class="group-summary"
+            data-group-id="{{group.id}}"
+            data-specie-id="{{group.specieid}}">
+            Summary
         </div>
         <div class="group-efforts"
-	     data-specie-id="{{group.specieid}}"
-	     data-id="group-{{group.id}}">
-	</div>
-	<button class="effort-button" data-button="effort">+</button>
-      </div>
+            data-specie-id="{{group.specieid}}"
+            data-id="group-{{group.id}}">
+            <div class="group-efforts-inner"></div>
+        </div>
+    </div>
     </script>
 
     <script type="text/html" id="template-effort">
-      <div class="effort"
+      <div class="effort{{#each effort.extraClasses}} {{this}}{{/each}}"
            id="effort-{{effort.specieid}}-{{effort.groupid}}-{{effort.id}}">
         <h4 class="editable"
 	    data-edit-header="effort"
