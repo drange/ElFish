@@ -5,15 +5,15 @@
 //Then you can draw a point at (10,10) like this:
 
 function updatePlot(sp, gr) {
-    console.log("updatePlot(" + sp + "," + gr + ")");
+    // console.log("updatePlot(" + sp + "," + gr + ")");
     
     var selector = "canvas.canvas-group-plot[data-group-id='" + gr + "'][data-specie-id='" + sp + "']";
     
-    console.log("plot selector: " + selector);
+    // console.log("plot selector: " + selector);
     
     var canvas = $(selector);
     
-    console.log("plot canvas: " + canvas);
+    // console.log("plot canvas: " + canvas);
     
     if (canvas == null){
         console.log("canvas null for " + sp + ", " + gr);
@@ -61,7 +61,7 @@ function updatePlot(sp, gr) {
         ctx.lineTo(x1,y1);
         ctx.stroke();   
         
-        console.log("plot: (" + x0.toFixed(1) + "   " + y0.toFixed(1) + ")\t→\t(" + x1.toFixed(1) + "   " + y1.toFixed(1) + ")");
+        // console.log("plot: (" + x0.toFixed(1) + "   " + y0.toFixed(1) + ")\t→\t(" + x1.toFixed(1) + "   " + y1.toFixed(1) + ")");
         
     }
     

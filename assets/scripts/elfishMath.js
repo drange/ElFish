@@ -27,16 +27,16 @@ function catchability (arr) {
     // console.log("q = " + q);
     
     for (var i = 0; i < 100; i++) {
-	var oldq=q;
-	sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
-	qinv = 1 - q;
-	q = (summand + sumtwo) * qinv;
-	// console.log("q" + i + " = " + q);
-	if (Math.abs(oldq-q) < 0.00001) {
-	    return q;
-	}
+	    var oldq=q;
+	    sumtwo = (k* Math.pow(q,k)) / (1 - Math.pow(q,k));
+	    qinv = 1 - q;
+	    q = (summand + sumtwo) * qinv;
+	    // console.log("q" + i + " = " + q);
+	    if (Math.abs(oldq-q) < 0.00001) {
+	        return q;
+	    }
     }
-    console.warn("Unstable q");
+    // console.log("Unstable q");
     window.elfish.unstable = true;    
     return q;
 }
@@ -56,7 +56,7 @@ function estimate (arr) {
     // TOTAL CATCH
     var totalCatch = sum(arr);
     
-    q = catchability(arr);
+    var q = catchability(arr);
     return totalCatch / (1-Math.pow(q,k));
 }
 
@@ -67,7 +67,7 @@ function estimate (arr) {
  */
 function confidence (arr, area) {
     if (typeof area === "undefined") {
-	area = 100;
+	    area = 100;
     }
     
     
@@ -77,7 +77,7 @@ function confidence (arr, area) {
     // TOTAL CATCH
     var totalCatch = sum(arr);
     
-    q = catchability(arr);
+    var q = catchability(arr);
     
     var qk = Math.pow(q,k);
     
@@ -95,14 +95,14 @@ function confidence (arr, area) {
     // console.log("CS4 = " + CS4);
     
     var CT4 = Math.sqrt(CS4);
-
+    
     // console.log("CT4 = " + CT4);
     
     var CU4 = 1.96 * CT4;
-
+    
     // console.log("CU4 = " + CU4);
     
-    return CU4/area * 100
+    return CU4/area * 100;
 }
 
 /**
@@ -110,18 +110,18 @@ function confidence (arr, area) {
  */
 function getEstimateString(arr) {
     if (arr.length < 2) {
-	return "---";
+	    return "---";
     }
     
     var q = estimate(arr);
     var cf = confidence(arr, 100);
     var unstable = "";
     if (window.elfish.unstable) {
-	window.elfish.unstable = false;
-	unstable = "*";
+	    window.elfish.unstable = false;
+	    unstable = "*";
     }
     
-    return q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable
+    return q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable;
 }
 
 /**
@@ -130,16 +130,16 @@ function getEstimateString(arr) {
  */
 function getKE(arr) {
     if (arr.length < 2) {
-	return "---";
+	    return "---";
     }
-
+    
     // todo precomputed
     var q = estimate(arr);
     var cf = confidence(arr, 100);
     var unstable = "";
     if (window.elfish.unstable) {
-	window.elfish.unstable = false;
-	unstable = "*";
+	    window.elfish.unstable = false;
+	    unstable = "*";
     }
     
     return (cf/q).toFixed(2);
@@ -147,18 +147,18 @@ function getKE(arr) {
 
 function getTE(arr) {
     if (arr.length < 2) {
-	return "---";
+	    return "---";
     }
     
-    t = sum(arr);
+    var t = sum(arr);
     
     // todo precomputed
     var q = estimate(arr);
     var cf = confidence(arr, 100);
     var unstable = "";
     if (window.elfish.unstable) {
-	window.elfish.unstable = false;
-	unstable = "*";
+	    window.elfish.unstable = false;
+	    unstable = "*";
     }
     
     return (t/q).toFixed(2);
@@ -171,7 +171,7 @@ function getTE(arr) {
 function sum(arr) {
     var t = 0;
     for (var i = 0; i < arr.length; i++) {
-	t += arr[i];
+	    t += arr[i];
     }
     return t;
 }

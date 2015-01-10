@@ -102,8 +102,7 @@ input {
 .group-plot {
     background-color: #eee;
     width: 200px;
-    float: left;
-    clear:right;
+    clear: right;
     font-size: 13pt;
     margin: 15px 10px 15px 0;
     padding: 10px;
@@ -170,4 +169,8 @@ input {
 .footer {
     z-index: 2;
     position: relative;
+}
+
+.red {
+    color: #800;
 }

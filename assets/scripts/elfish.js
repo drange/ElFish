@@ -270,21 +270,21 @@ function exportCSV () {
 
 
 function recomputeValues(s,g,e) {
-    // the values for effort e in species s, group g changed, recompute the entire group
-    // TODO what's going on below here?
-
+    // the values for effort e in species s, group g changed,
+    // recompute the entire group
+    
     var specie = window.elfish.species[s];
     var group = specie.groups[g];
     var efforts = group.efforts;
-
+    
     var vals = [];
     for (var e = 0; e < efforts.length; e++) {
         vals.push(getInputValue(s,g,e));
-
-
+        
+        
         if (e > 0) {
             // one effort is not enough.
-
+            
             var arr = [];
             var t = 0;
             for (var i = 0; i < vals.length; i++) {
@@ -292,36 +292,31 @@ function recomputeValues(s,g,e) {
                 arr.push(v);
                 t += v;
             }
-
-            console.log(arr);
+            
             if (t != t) {
-                console.warn("Contains NaN so abort");
+                console.log("Array contains NaN so abort");
                 return; // NaN
             }
-
-
+            
+            
             var estimateString = getEstimateString(arr);
-
+            
             var postfix = "-" + s + "-" + g + "-" + e;
-            console.log("postfix = " + postfix);
-
+            
             document.getElementById("est" + postfix).innerHTML =
                 "N̂ =" + estimateString;
-
+            
             document.getElementById("ke" + postfix).innerHTML =
                 "k/E =" + getKE(arr);
-
+            
             document.getElementById("te" + postfix).innerHTML =
                 "T/E =" + getTE(arr);
-
+            
             if (estimateString.indexOf("*") >= 0) {
                 document.getElementById("est" + postfix).className = "est red";
             } else {
                 document.getElementById("est" + postfix).className = "est";
             }
-
-            console.log("est: " + estimateString);
-
         }
     }
     store();
