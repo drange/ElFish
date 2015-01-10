@@ -23,7 +23,7 @@ function updatePlot(sp, gr) {
     var ctx = canvas[0].getContext("2d");
     
     ctx.fillStyle = "#eee";
-    ctx.fillRect(0, 0, 200, 200);
+    ctx.fillRect(0, 0, 200, 150);
     ctx.fillStyle = "#000";
     
     var arr = [];
@@ -40,14 +40,22 @@ function updatePlot(sp, gr) {
 
     var maxVal = Math.max.apply(Math, arr);
 
-    var scale = 50.0;
+    var scale = 150.0;
     var normalizer = scale / maxVal;
-
+    
+    var padding = 8;
+    
+    var totalWidth = 200 - (2*padding);
+    var unitWidth = Math.min(30, Math.floor(totalWidth / arr.length));
+    
+    var barwidth = Math.max(1,Math.floor(0.6 * unitWidth));
+    var spacing =  Math.max(1,Math.floor(0.4 * unitWidth));
+    
     for (var i = 0; i < arr.length; i++) {
-        ctx.lineWidth = 5;
+        ctx.lineWidth = barwidth;
         ctx.beginPath();
         
-        var xVal = 2*ctx.lineWidth * i + 10;
+        var xVal = (spacing+ctx.lineWidth) * i + padding;
         
         var yVal = arr[i] * normalizer;
         
