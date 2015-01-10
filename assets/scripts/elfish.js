@@ -441,8 +441,8 @@ function run () {
         });
 
     $( ".app")
-        .delegate(".tabs-list a", "click", function (e) {
-            var specieId = $(e.target).parent().data("specie-id");
+        .delegate(".tabs-list li", "click", function (e) {
+            var specieId = $(e.currentTarget).data("specie-id");
             efGUI.showSpecie(specieId);
         });
 }

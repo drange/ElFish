@@ -29,13 +29,35 @@ input {
 .tabs-list li {
     display: inline-block;
     margin-right: 15px;
+    padding: 15px;
+    border: 1px solid #ccc;
+}
+
+.tabs-list li:hover {
+    border: 1px solid #aaa;
+}
+
+.tabs-list li:active {
+    border: 1px solid red;
 }
 
 .tabs-list .active {
-    padding: 15px;
     background: #ccc;
+    border-color: #777;
 }
 
+.tabs-list .active:hover {
+    background: #ccc;
+    border-color: #777;
+}
+
+.tabs-list .new {
+    padding: 0;
+    border: none;
+}
+.tabs-list .new:hover {
+    border: none;
+}
 .data {
     position: relative;
 }
