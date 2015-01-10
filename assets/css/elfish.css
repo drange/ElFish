@@ -18,6 +18,11 @@ input {
     -webkit-box-sizing: border-box;
 }
 
+input[type="number"] {
+    width: 6em;
+    font-size: 16pt;
+}
+
 .editable {
     padding: 15px 5px;
 }
