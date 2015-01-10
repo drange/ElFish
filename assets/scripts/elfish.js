@@ -374,6 +374,10 @@ function run () {
                 var ef = parseInt($(evtObj.target).attr("data-effort-header-effort"), 10);
 
                 var header = $(evtObj.target).text();
+                // FIXME TODO got this error:
+                // TypeError: window.elfish.species[sp].groups[gr].efforts[ef] is undefined elfish.js:377
+                // where 377 used to be the line immediately below.
+                // can this happen if we click on + or on the hidden effort-thing?
                 window.elfish.species[sp].groups[gr].efforts[ef].name = header;
                 break;
 
