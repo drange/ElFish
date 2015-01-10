@@ -435,9 +435,10 @@ function run () {
             e = parseInt($(evtObj.target).attr("data-input-effort"), 10);
 
             window.elfish.species[s].groups[g].efforts[e].value = val;
-
+            
             recomputeValues(s,g,e);
             store();
+            updatePlot(s,g);
         });
 
     $( ".app")
@@ -482,6 +483,6 @@ $(function () {
         console.log("Has local storage, reloading ... ");
         retrieve();
     }
-
     run();
+    updatePlot(0, 0);
 });

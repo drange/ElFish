@@ -95,6 +95,20 @@ input {
     margin: 5px;
 }
 
+.group-plot {
+    background-color: #eee;
+    width: 200px;
+    float: left;
+    clear:right;
+    font-size: 13pt;
+    margin: 15px 10px 15px 0;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+    transition: .5s;
+}
+
 .effort {
     background-color: #eee;
     width: 200px;
