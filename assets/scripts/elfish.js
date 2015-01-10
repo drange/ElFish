@@ -45,15 +45,16 @@ function reloadDataIntoDom() {
         for (var g = 0; g < groups.length; g++) {
             var gName = groups[g].name;
             efGUI.domGroup(g, gName, s);
-
+            
             for (var e = 0; e < window.elfish.numberOfEfforts; e++) {
                 var eName = groups[g].efforts[e].name;
                 var value =  groups[g].efforts[e].value;
-
+                
                 efGUI.domEffort(e, eName, g, s, value, groups[g].efforts);
                 console.log("\t\tAdded effort " + e + ": " + eName + " (" + value + ")");
                 recomputeValues(s,g,e);
             }
+            updatePlot(s,g);
         }
     }
 
@@ -441,7 +442,14 @@ function run () {
             var specieId = $(e.currentTarget).data("specie-id");
             efGUI.showSpecie(specieId);
         });
+
+    $( ".app")
+        .delegate(".group-plot", "click", function (e) {
+            $(e.currentTarget).find("canvas").toggle(200);
+        });
 }
+
+
 
 function updateSummary (sp,gr) {
     var elt = $(".group-summary[data-group-id="+gr+"][data-specie-id="+sp+"]")[0];
