@@ -68,6 +68,8 @@ input {
     opacity: 0;
     transition: opacity .5s;
     top: 0;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .specie.visible {
@@ -76,6 +78,8 @@ input {
     z-index: 1;
     transition: opacity .5s;
     transition-delay: .5s;
+    overflow: visible;
+    max-width: 110%;
 }
 
 .group {
