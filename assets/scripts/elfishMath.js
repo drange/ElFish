@@ -44,6 +44,9 @@ function catchability (arr) {
 
 
 /**
+ * Zippin estimate of N hat of catches given in array arr.
+ *
+ *
  * Computes T / (1 - q^k)
  * where T = totalCatch (BB4)
  * k = num catch (AG4)
@@ -174,4 +177,48 @@ function sum(arr) {
 	    t += arr[i];
     }
     return t;
+}
+
+
+
+function carleAndStrub(arr, guess) {
+    // zippin is probably good guess
+    if (typeof guess == "undefined") {
+        guess = estimate(arr);
+    }
+    
+    
+    var k = arr.length;
+    
+    console.log("k = " + k);
+    
+    var totalCatch = sum(arr);
+    
+    console.log("T = " + totalCatch);
+    
+    // linCatch is linearly increasing sum over catches (see loop)
+    var linCatch = 0.0;
+    for (var j = 0; j < arr.length; j++) {
+        linCatch += arr[j] * (k-(j+1));
+    }
+    
+    console.log("Σ (k-i)C_i = " + linCatch);
+    
+    var prod = 1.0;
+    for (var i = 1; i <= k; i++) {
+        var numerator   = (k * guess) - linCatch - totalCatch + 1.0 + k - i;
+        var denominator = (k * guess) - linCatch + 2.0 + k - i;
+        prod = prod * (numerator / denominator);
+        console.log("\tnum = " + numerator.toFixed(2));
+        console.log("\tden = " + denominator.toFixed(2));
+        console.log("\tit " + i + " prod = " + prod.toFixed(2));
+    }
+    
+    var prodIntoEstimate = prod * (guess + 1.0);
+    
+    var carNStrub = (totalCatch - 1.0) * prodIntoEstimate;
+    
+    // N hat >= carNStrub
+    
+    return carNStrub;
 }
