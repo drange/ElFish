@@ -60,13 +60,46 @@ function updatePlot(sp, gr) {
     
     var prevX = null;
     var prevY = null;
+    
+    var namePrefix = "ef ";
+    if (arr.length > 6) {
+	namePrefix = "ef";
+    }
+    if (arr.length > 8) {
+	namePrefix = "e";
+    }
+    if (arr.length > 10) {
+	namePrefix = "";
+    }
+
     for (var i = 0; i < arr.length; i++) {
-        var xVal = (spacing + barwidth) * i + padding;
+	ctx.strokeStyle = "#000";
+	
+	// we don't draw 0 because it has no estimate, hence i-1
+        var xVal = (spacing + barwidth) * (i-1) + padding;
         var yVal = est[i] * normalizer;
-        
-        drawErrorBar(ctx, xVal, scale - yVal, cf[i], barwidth, prevX, prevY);
-        prevX = xVal;
-        prevY = scale - yVal;
+
+	if (i > 0) {
+	    var nam = namePrefix + (1+i);
+	    if ((arr.length > 10) && (i % 2 == 0)) {
+		nam = "";
+	    }
+	    if ((arr.length > 20) && (i % 3 != 0)) {
+		nam = "";
+	    }
+	    if ((arr.length > 40) && (i % 5 != 0)) {
+		nam = "";
+	    }
+	    
+	    
+            drawErrorBar(ctx, xVal, scale - yVal, 
+			 cf[i]*normalizer, barwidth, 
+			 prevX, prevY, 
+			 maxVal, normalizer, 
+			 nam);
+	    prevX = xVal;
+            prevY = scale - yVal;
+	}
     }
     ctx.fillText(est[est.length-1].toFixed(1), prevX + padding, prevY); 
 
@@ -80,17 +113,56 @@ function updatePlot(sp, gr) {
     
 }
 
-function drawErrorBar(ctx, x, y, error, barwidth, prevX, prevY) {
+function drawErrorBar(ctx, x, y, error, barwidth, prevX, prevY, maxVal, normalizer, name) {
     
     var e = error/2;
     var w = barwidth/2;
+    // console.log(x.toFixed(1) + "\t" + y.toFixed(1) + "\t" + maxVal.toFixed(1));
+    // console.log("\t" + e.toFixed(1));
+    // console.log("\t"+(y+e).toFixed(1) + "\t" + (y-e).toFixed(1));
+    
+    ctx.fillText(name, (x-w), maxVal * normalizer);
     
     ctx.lineWidth = 1;
     ctx.beginPath();
     
-    // vertical line
-    ctx.moveTo(x,y-e);
-    ctx.lineTo(x,y+e);
+    if (y >= maxVal || y < 0) {
+	ctx.strokeStyle = "#f00";
+	ctx.moveTo(x,0);
+	ctx.lineTo(x,maxVal);
+	ctx.stroke();
+	return;
+    }
+    
+    
+    // vertical line up
+    ctx.moveTo(x,y);
+    if ((y - e) <= 0) {
+	ctx.lineTo(x,barwidth);
+	ctx.lineTo(x-w,barwidth+w); // down left
+
+	ctx.lineTo(x,barwidth);
+	ctx.lineTo(x+w,barwidth+w); // down right
+
+	// plus a small arrow head
+    } else {
+	ctx.lineTo(x,y-e);
+    }
+
+    // vertical line down
+    ctx.moveTo(x,y);
+    if ((y + e) >= maxVal) {
+	ctx.lineTo(x,maxVal-barwidth);
+	ctx.lineTo(x-w,maxVal - (barwidth+w)); // up left
+
+	ctx.lineTo(x,maxVal-barwidth);
+	ctx.lineTo(x+w,maxVal - (barwidth+w)); // up right
+
+	// plus a small arrow head
+    } else {
+	ctx.lineTo(x,y+e);
+    }
+    
     
     // horizontal line marking (x,y)
     ctx.moveTo(x-(w/2),y);
