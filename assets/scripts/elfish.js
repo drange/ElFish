@@ -294,6 +294,8 @@ function recomputeValues(s,g,e) {
     var vals = [];
     for (var e = 0; e < efforts.length; e++) {
         vals.push(getInputValue(s,g,e));
+
+        var postfix = "-" + s + "-" + g + "-" + e;
         
         
         if (e > 0) {
@@ -302,29 +304,39 @@ function recomputeValues(s,g,e) {
             var arr = [];
             var t = 0;
             for (var i = 0; i < vals.length; i++) {
-                var v = parseInt(vals[i],10);
+                var val = vals[i];
+                if (val === "") {
+                    console.log("Clearing innerHTML");
+                    document.getElementById("est" + postfix).innerHTML = "---";
+                    document.getElementById("ke" + postfix).innerHTML = "---";
+                    document.getElementById("te" + postfix).innerHTML = "---";
+		    t = NaN;
+                    break;
+                }
+                var v = parseInt(val,10);
+		
                 arr.push(v);
                 t += v;
             }
             
             if (t != t) {
                 // console.log("Array contains NaN so abort");
+                updateSummary(s,g);
                 return; // NaN
             }
             
             
             var estimateString = getEstimateString(arr);
             
-            var postfix = "-" + s + "-" + g + "-" + e;
             
             document.getElementById("est" + postfix).innerHTML =
                 "N̂ =" + estimateString;
             
             document.getElementById("ke" + postfix).innerHTML =
-                "k/E =" + getKE(arr);
+                "k/N̂ =" + getKE(arr);
             
             document.getElementById("te" + postfix).innerHTML =
-                "T/E =" + getTE(arr);
+                "T/N̂ =" + getTE(arr);
             
             if (estimateString.indexOf("*") >= 0) {
                 document.getElementById("est" + postfix).className = "est red";
@@ -441,11 +453,16 @@ function run () {
     $( ".app" )
         .delegate(".catch-input", "change", function (evtObj) {
             var val = evtObj.target.value;
-            val = parseInt(val, 10);
-            
+	    
             s = parseInt($(evtObj.target).attr("data-input-species"), 10);
             g = parseInt($(evtObj.target).attr("data-input-group"), 10);
             e = parseInt($(evtObj.target).attr("data-input-effort"), 10);
+            
+            if (val === "") {
+            	console.log("Empty val for " + s + " " + g + " " + e);
+            } else {
+            	val = parseInt(val, 10);
+            }
             
             window.elfish.species[s].groups[g].efforts[e].value = val;
             
@@ -478,9 +495,14 @@ function updateSummary (sp,gr) {
     var arr = [];
     
     for (var e = 0; e < numOfEfforts; e++) {
-        var eVal = parseInt(groups.efforts[e].value, 10);
-        totalCatch += eVal;
-        arr.push(eVal);
+	var val = groups.efforts[e].value;
+        if (val === "") {
+            continue;
+        } else {
+            var eVal = parseInt(val, 10);
+            totalCatch += eVal;
+            arr.push(eVal);
+        }
     }
     
     est = getEstimateString(arr);
