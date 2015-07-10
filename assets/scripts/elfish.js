@@ -333,7 +333,7 @@ function recomputeValues(s,g,e) {
                 "N̂ =" + estimateString;
             
             document.getElementById("ke" + postfix).innerHTML =
-                "k/N̂ =" + getKE(arr);
+                "CI/N̂ =" + getCIslashE(arr);
             
             document.getElementById("te" + postfix).innerHTML =
                 "T/N̂ =" + getTE(arr);

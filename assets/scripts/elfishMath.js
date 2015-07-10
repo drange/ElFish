@@ -1,3 +1,103 @@
+
+function X(arr) {
+    var x = 0;
+    var k = arr.length;
+    for (var i = 0; i < k; i++) {
+        x += (k-(1+i))*arr[i];
+    }
+    return x;
+}
+
+function newT(arr) {
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+
+function newZippin(arr) {
+    var t = newT(arr);
+    var x = X(arr);
+    var k = arr.length;
+    var hatN = t-1;
+    console.log("newZippin N: " + hatN);
+    console.log("newZippin t: " + t);
+    console.log("newZippin x: " + x);
+    console.log("newZippin k: " + k);
+    for (var i = 0; i < 1000000; i++) {
+        var lhs = hatN + i;
+        var rhs = preEstimate(arr, lhs);
+        var diff = rhs - lhs;
+        //console.log(lhs + "\t" + rhs);
+        if (diff > 0) {
+            // lhs is solution: hatN + i
+            console.log("Found solution " + lhs);
+            console.log("p = " + newCatch(arr, lhs));
+            return lhs;
+        }
+    }
+    console.log("Zippin did not find solution for " + arr);
+    return -1;
+}
+
+function preEstimate(arr, hatN) {
+    var t = newT(arr);
+    var x = X(arr);
+    var k = arr.length;
+    
+    var tellerA = (hatN - t + 0.5);
+    var tellerB = Math.pow((k * hatN - x), k);
+    var nevner = Math.pow((k*hatN  - x - t),k);
+    
+    return (tellerA * tellerB) / nevner - 0.5;    
+}
+
+function newConfidenceInterval(arr) {
+    var hatN = newZippin(arr);
+    var p = newCatch(arr,hatN);
+    var q = 1 - p;
+    var k = arr.length;
+    
+    var qk = Math.pow(q,k);
+    
+    var teller = hatN * (1 - qk) * qk;
+    var nevnerA = Math.pow(1 - qk, 2);
+    var nevnerB = Math.pow(p*k, 2) * Math.pow(q,k-1);
+    var inni = teller / (nevnerA - nevnerB);
+    var sqrt = Math.sqrt(inni);
+
+    return 1.96 * sqrt;
+}
+
+
+/**
+* catchability p = T / (kN - X)
+*/
+function newCatch(arr,hatN) {
+    console.log("newCatch arr\t" + arr);
+    console.log("newCatch N\t" + hatN);
+    
+    var t = newT(arr);
+    var x = X(arr);
+    var k = arr.length;
+    
+    console.log("newCatch t\t" + t);
+    console.log("newCatch x\t" + x);
+    console.log("newCatch k\t" + k);
+
+    
+    var nevner = k * hatN - x;
+    
+    var ret = t / (1.0*nevner);
+    console.log("newCatch p = " + (Math.round(100*ret) / 100));
+    return ret;
+}
+
+
+
+
+
 /**
  * Computes the catchability q = 1-p.
  *
@@ -53,14 +153,15 @@ function catchability (arr) {
  * q = (1-p) (BV4)
  */
 function estimate (arr) {
-    // k = number of removals
-    var k = arr.length;
+    return newZippin(arr);
+    // // k = number of removals
+    // var k = arr.length;
     
-    // TOTAL CATCH
-    var totalCatch = sum(arr);
+    // // TOTAL CATCH
+    // var totalCatch = sum(arr);
     
-    var q = catchability(arr);
-    return totalCatch / (1-Math.pow(q,k));
+    // var q = catchability(arr);
+    // return totalCatch / (1-Math.pow(q,k));
 }
 
 
@@ -69,43 +170,46 @@ function estimate (arr) {
  * Computes confidence interval.  If no area is given, assumes 100.
  */
 function confidence (arr, area) {
-    if (typeof area === "undefined") {
-	    area = 100;
-    }
+    
+    return newConfidenceInterval(arr);
+    
+    // if (typeof area === "undefined") {
+	//     area = 100;
+    // }
     
     
-    // k = number of removals
-    var k = arr.length;
+    // // k = number of removals
+    // var k = arr.length;
     
-    // TOTAL CATCH
-    var totalCatch = sum(arr);
+    // // TOTAL CATCH
+    // var totalCatch = sum(arr);
     
-    var q = catchability(arr);
+    // var q = catchability(arr);
     
-    var qk = Math.pow(q,k);
+    // var qk = Math.pow(q,k);
     
-    var CR4 = totalCatch / (1-Math.pow(q,k));
+    // var CR4 = totalCatch / (1-Math.pow(q,k));
     
-    // console.log("CR4 = " + CR4);
+    // // console.log("CR4 = " + CR4);
     
-    // CR4 * (1-(BV4^$AG4)) * BV4^$AG4
-    var CS4numerator = CR4 * (1-qk) * qk;
+    // // CR4 * (1-(BV4^$AG4)) * BV4^$AG4
+    // var CS4numerator = CR4 * (1-qk) * qk;
     
-    // (((1-(qk))^2)-(Math.pow((1-q)*k,2))*(Math.pow(q,k-1)))
-    var CS4denominator = (Math.pow(1-qk,2) - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
+    // // (((1-(qk))^2)-(Math.pow((1-q)*k,2))*(Math.pow(q,k-1)))
+    // var CS4denominator = (Math.pow(1-qk,2) - (Math.pow((1-q)*k,2)*(Math.pow(q,k-1))));
     
-    var CS4 = CS4numerator / CS4denominator;
-    // console.log("CS4 = " + CS4);
+    // var CS4 = CS4numerator / CS4denominator;
+    // // console.log("CS4 = " + CS4);
     
-    var CT4 = Math.sqrt(CS4);
+    // var CT4 = Math.sqrt(CS4);
     
-    // console.log("CT4 = " + CT4);
+    // // console.log("CT4 = " + CT4);
     
-    var CU4 = 1.96 * CT4;
+    // var CU4 = 1.96 * CT4;
     
-    // console.log("CU4 = " + CU4);
+    // // console.log("CU4 = " + CU4);
     
-    return CU4/area * 100;
+    // return CU4/area * 100;
 }
 
 /**
@@ -116,36 +220,36 @@ function getEstimateString(arr) {
 	    return "---";
     }
     
-    var q = estimate(arr);
-    var cf = confidence(arr, 100);
+    var q = newZippin(arr);
+    var cf = newConfidenceInterval(arr);
     var unstable = "";
     if (window.elfish.unstable) {
 	    window.elfish.unstable = false;
 	    unstable = "*";
     }
     
-    return q.toFixed(2) + " &pm; " + cf.toFixed(2) + unstable;
+    return q.toFixed(0) + " &pm; " + cf.toFixed(1) + unstable;
 }
 
 /**
  * Returns k/E
  *
  */
-function getKE(arr) {
+function getCIslashE(arr) {
     if (arr.length < 2) {
 	    return "---";
     }
     
     // todo precomputed
     var q = estimate(arr);
-    var cf = confidence(arr, 100);
+    var cf = newConfidenceInterval(arr);
     var unstable = "";
     if (window.elfish.unstable) {
 	    window.elfish.unstable = false;
 	    unstable = "*";
     }
     
-    return (cf/q).toFixed(2);
+    return (cf/q).toFixed(3);
 }
 
 function getTE(arr) {
