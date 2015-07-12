@@ -330,7 +330,11 @@ function recomputeValues(s,g,e) {
             
             
             document.getElementById("est" + postfix).innerHTML =
-                "N̂ =" + estimateString;
+                "N̂<sub>Z</sub> =" + estimateString;
+
+            var estimateStringCS = getEstimateStringCS(arr);
+            document.getElementById("est" + postfix).innerHTML =
+                "N̂<sub>CS</sub> =" + estimateString;
             
             document.getElementById("ke" + postfix).innerHTML =
                 "CI/N̂ =" + getCIslashE(arr);
@@ -508,7 +512,7 @@ function updateSummary (sp,gr) {
     est = getEstimateString(arr);
     
     var data = "<p>Efforts = " + numOfEfforts + "</p>";
-    data += "<p>N̂ = " + est + "</p>";
+    data += "<p>N̂<sub>Z</sub> = " + est + "</p>";
     data += "<p>T = " + totalCatch + "</p>";
     
     elt.innerHTML = data;

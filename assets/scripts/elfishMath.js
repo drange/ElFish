@@ -41,6 +41,59 @@ function newZippin(arr) {
     return -1;
 }
 
+
+
+
+function carleStrubEq(t, hatN, k, x) {
+    var prod = 1;
+    for (var i = 0; i < k; i++) {
+        var j = i+1;
+        var teller = k * hatN - x - t + 1+ k - j;
+        var nevner = k * hatN - x + 2 + k - j;
+        prod += (teller*1.0) / nevner;
+    }
+    return t - 1  + ( ( hatN + 1) * prod);
+}
+
+
+function newCarleStrub(arr) {
+    var t = newT(arr);
+    var x = X(arr);
+    var k = arr.length;
+    var hatN = t-1;
+    
+    console.log("newCS N:   " + hatN);
+    console.log("newCS t:   " + t);
+    console.log("newCS x:   " + x);
+    console.log("newCS k:   " + k);
+
+    for (var i = 0; i < 1000000; i++) {
+        var lhs = hatN + i;
+        var rhs = carleStrubEq(t, lhs, k, x);
+        var diff = rhs - lhs;
+        // console.log(lhs + "\t" + rhs);
+        if (diff > 0) {
+            // lhs is solution: hatN + i
+            console.log("newCS      " + lhs);
+            return lhs;
+        }
+    }
+    console.log("Carle&Strub did not find solution for " + arr);
+    return -1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 function preEstimate(arr, hatN) {
     var t = newT(arr);
     var x = X(arr);
@@ -221,6 +274,7 @@ function getEstimateString(arr) {
     }
     
     var q = newZippin(arr);
+    var cs = newCarleStrub(arr);
     var cf = newConfidenceInterval(arr);
     var unstable = "";
     if (window.elfish.unstable) {
@@ -230,6 +284,37 @@ function getEstimateString(arr) {
     
     return q.toFixed(0) + " &pm; " + cf.toFixed(1) + unstable;
 }
+
+
+
+
+
+
+/**
+ * Gets C&S string 200 &pm; 59*
+ */
+function getEstimateStringCS(arr) {
+    if (arr.length < 2) {
+	    return "---";
+    }
+    
+    var cs = newCarleStrub(arr);
+    var cf = newConfidenceInterval(arr);
+    var unstable = "";
+    if (window.elfish.unstable) {
+	    window.elfish.unstable = false;
+	    unstable = "*";
+    }
+    
+    return cs.toFixed(0) + " &pm; " + cf.toFixed(1) + unstable;
+}
+
+
+
+
+
+
+
 
 /**
  * Returns k/E
