@@ -21,10 +21,10 @@ function newZippin(arr) {
     var x = X(arr);
     var k = arr.length;
     var hatN = t-1;
-    console.log("newZippin N: " + hatN);
-    console.log("newZippin t: " + t);
-    console.log("newZippin x: " + x);
-    console.log("newZippin k: " + k);
+    // console.log("newZippin N: " + hatN);
+    // console.log("newZippin t: " + t);
+    // console.log("newZippin x: " + x);
+    // console.log("newZippin k: " + k);
     for (var i = 0; i < 1000000; i++) {
         var lhs = hatN + i;
         var rhs = preEstimate(arr, lhs);
@@ -62,10 +62,10 @@ function newCarleStrub(arr) {
     var k = arr.length;
     var hatN = t-1;
     
-    console.log("newCS N:   " + hatN);
-    console.log("newCS t:   " + t);
-    console.log("newCS x:   " + x);
-    console.log("newCS k:   " + k);
+    // console.log("newCS N:   " + hatN);
+    // console.log("newCS t:   " + t);
+    // console.log("newCS x:   " + x);
+    // console.log("newCS k:   " + k);
 
     for (var i = 0; i < 1000000; i++) {
         var lhs = hatN + i;
@@ -128,22 +128,22 @@ function newConfidenceInterval(arr) {
 * catchability p = T / (kN - X)
 */
 function newCatch(arr,hatN) {
-    console.log("newCatch arr\t" + arr);
-    console.log("newCatch N\t" + hatN);
+    // console.log("newCatch arr\t" + arr);
+    // console.log("newCatch N\t" + hatN);
     
     var t = newT(arr);
     var x = X(arr);
     var k = arr.length;
     
-    console.log("newCatch t\t" + t);
-    console.log("newCatch x\t" + x);
-    console.log("newCatch k\t" + k);
+    // console.log("newCatch t\t" + t);
+    // console.log("newCatch x\t" + x);
+    // console.log("newCatch k\t" + k);
 
     
     var nevner = k * hatN - x;
     
     var ret = t / (1.0*nevner);
-    console.log("newCatch p = " + (Math.round(100*ret) / 100));
+    // console.log("newCatch p = " + (Math.round(100*ret) / 100));
     return ret;
 }
 
@@ -379,11 +379,11 @@ function carleAndStrub(arr, guess) {
     
     var k = arr.length;
     
-    console.log("k = " + k);
+    // console.log("k = " + k);
     
     var totalCatch = sum(arr);
     
-    console.log("T = " + totalCatch);
+    // console.log("T = " + totalCatch);
     
     // linCatch is linearly increasing sum over catches (see loop)
     var linCatch = 0.0;
@@ -398,9 +398,9 @@ function carleAndStrub(arr, guess) {
         var numerator   = (k * guess) - linCatch - totalCatch + 1.0 + k - i;
         var denominator = (k * guess) - linCatch + 2.0 + k - i;
         prod = prod * (numerator / denominator);
-        console.log("\tnum = " + numerator.toFixed(2));
-        console.log("\tden = " + denominator.toFixed(2));
-        console.log("\tit " + i + " prod = " + prod.toFixed(2));
+        // console.log("\tnum = " + numerator.toFixed(2));
+        // console.log("\tden = " + denominator.toFixed(2));
+        // console.log("\tit " + i + " prod = " + prod.toFixed(2));
     }
     
     var prodIntoEstimate = prod * (guess + 1.0);
