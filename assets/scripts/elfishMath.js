@@ -21,21 +21,11 @@ function newZippin(arr) {
     var x = X(arr);
     var k = arr.length;
     var hatN = t-1;
-    // console.log("newZippin N: " + hatN);
-    // console.log("newZippin t: " + t);
-    // console.log("newZippin x: " + x);
-    // console.log("newZippin k: " + k);
     for (var i = 0; i < 1000000; i++) {
         var lhs = hatN + i;
         var rhs = preEstimate(arr, lhs);
-        var diff = rhs - lhs;
-        //console.log(lhs + "\t" + rhs);
-        if (diff > 0) {
-            // lhs is solution: hatN + i
-            console.log("Found solution " + lhs);
-            console.log("p = " + newCatch(arr, lhs));
+        if (rhs > lhs)
             return lhs;
-        }
     }
     console.log("Zippin did not find solution for " + arr);
     return -1;
@@ -70,13 +60,8 @@ function newCarleStrub(arr) {
     for (var i = 0; i < 1000000; i++) {
         var lhs = hatN + i;
         var rhs = carleStrubEq(t, lhs, k, x);
-        var diff = rhs - lhs;
-        // console.log(lhs + "\t" + rhs);
-        if (diff > 0) {
-            // lhs is solution: hatN + i
-            console.log("newCS      " + lhs);
+        if (lhs >= rhs)
             return lhs;
-        }
     }
     console.log("Carle&Strub did not find solution for " + arr);
     return -1;
@@ -366,48 +351,4 @@ function sum(arr) {
 	    t += arr[i];
     }
     return t;
-}
-
-
-
-function carleAndStrub(arr, guess) {
-    // zippin is probably good guess
-    if (typeof guess == "undefined") {
-        guess = estimate(arr);
-    }
-    
-    
-    var k = arr.length;
-    
-    // console.log("k = " + k);
-    
-    var totalCatch = sum(arr);
-    
-    // console.log("T = " + totalCatch);
-    
-    // linCatch is linearly increasing sum over catches (see loop)
-    var linCatch = 0.0;
-    for (var j = 0; j < arr.length; j++) {
-        linCatch += arr[j] * (k-(j+1));
-    }
-    
-    console.log("Σ (k-i)C_i = " + linCatch);
-    
-    var prod = 1.0;
-    for (var i = 1; i <= k; i++) {
-        var numerator   = (k * guess) - linCatch - totalCatch + 1.0 + k - i;
-        var denominator = (k * guess) - linCatch + 2.0 + k - i;
-        prod = prod * (numerator / denominator);
-        // console.log("\tnum = " + numerator.toFixed(2));
-        // console.log("\tden = " + denominator.toFixed(2));
-        // console.log("\tit " + i + " prod = " + prod.toFixed(2));
-    }
-    
-    var prodIntoEstimate = prod * (guess + 1.0);
-    
-    var carNStrub = (totalCatch - 1.0) * prodIntoEstimate;
-    
-    // N hat >= carNStrub
-    
-    return carNStrub;
 }
