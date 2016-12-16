@@ -50,7 +50,7 @@ function carleStrubEq(t, hatN, k, x) {
         var j = i+1;
         var teller = k * hatN - x - t + 1+ k - j;
         var nevner = k * hatN - x + 2 + k - j;
-        prod += (teller*1.0) / nevner;
+        prod *= (teller*1.0) / nevner;
     }
     return t - 1  + ( ( hatN + 1) * prod);
 }

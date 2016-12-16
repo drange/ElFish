@@ -51,8 +51,8 @@ function unitTestNewCatch(arr, hatN, p) {
     // testing X
     console.log("unit: Testing catch");
     var out = newCatch(arr,hatN);
-    if (Math.round(100*out) != (p*100)) {
-        var s = errorString("newCatch", arr, hatN, out);
+    if (Math.round(100*out) != Math.round(p*100)) {
+        var s = errorString("newCatch", arr, p, out);
         console.log(s);
         console.error(s);
     }
@@ -105,7 +105,7 @@ unitTestCarleStrub(arr,hatNCS);
 //
 arr = [10,20,30,24,2,7];
 hatNZ = 156;
-hatNCS = 156;
+hatNCS = 145;
 p = 0.14;
 x = 270;
 ci = 80.29;
@@ -135,10 +135,12 @@ unitTestConfidenceInterval(arr, ci);
 unitTestCarleStrub(arr,hatNCS);
 
 
-
+//
+// 3
+//
 arr =  [34, 46, 22, 26, 18, 16, 20, 12];
 hatNZ = 268;
-hatNCS = 268;
+hatNCS = 264;
 p = 0.1454;
 x = 834;
 ci = 56.33;
