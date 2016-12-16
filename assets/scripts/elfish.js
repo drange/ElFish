@@ -4,6 +4,7 @@ function initiateStorage() {
         species: [],
         visibleSpecies: null
     };
+    window.elfish.method = "cs";
 }
 
 /**
@@ -325,16 +326,16 @@ function recomputeValues(s,g,e) {
                 return; // NaN
             }
             
-            
-            var estimateString = getEstimateString(arr);
-            
-            
-            document.getElementById("est" + postfix).innerHTML =
-                "N̂<sub>Z</sub> =" + estimateString;
 
-            var estimateStringCS = getEstimateStringCS(arr);
+            var estString = "";
+            if (window.elfish.method == "zippin")
+                estString = getEstimateString(arr);
+            else
+                estString = getEstimateStringCS(arr);
+            console.log("picked method " + window.elfish.method + " :::: " + estString);
+
             document.getElementById("est" + postfix).innerHTML =
-                "N̂<sub>CS</sub> =" + estimateString;
+                "N̂ =" + estString;
             
             document.getElementById("ke" + postfix).innerHTML =
                 "CI/N̂ =" + getCIslashE(arr);
@@ -342,7 +343,7 @@ function recomputeValues(s,g,e) {
             document.getElementById("te" + postfix).innerHTML =
                 "T/N̂ =" + getTE(arr);
             
-            if (estimateString.indexOf("*") >= 0) {
+            if (estString.indexOf("*") >= 0) {
                 document.getElementById("est" + postfix).className = "est red";
             } else {
                 document.getElementById("est" + postfix).className = "est";
@@ -508,11 +509,16 @@ function updateSummary (sp,gr) {
             arr.push(eVal);
         }
     }
-    
-    est = getEstimateString(arr);
+
+    var est = "";
+    if (window.elfish.method == "zippin")
+        est = getEstimateString(arr);
+    else
+        est = getEstimateStringCS(arr);
+    console.log("SUMMARY method " + window.elfish.method + ": " + est);
     
     var data = "<p>Efforts = " + numOfEfforts + "</p>";
-    data += "<p>N̂<sub>Z</sub> = " + est + "</p>";
+    data += "<p>N̂ = " + est + "</p>";
     data += "<p>T = " + totalCatch + "</p>";
     
     elt.innerHTML = data;
@@ -532,3 +538,13 @@ $(function () {
     run();
     updatePlot(0, 0);
 });
+
+function setMethod(mt) {
+    if (mt == 1)
+        window.elfish.method = "zippin";
+    else
+        window.elfish.method = "cs";
+
+    console.log("Method: " + window.elfish.method);
+    reloadDataIntoDom();
+}

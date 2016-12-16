@@ -179,3 +179,15 @@ input[type="number"] {
 .red {
     color: #800;
 }
+
+.algorithm {
+    background-color: #eee;
+    width: 200px;
+    font-size: 13pt;
+    margin: 15px 10px 15px 0;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+    transition: .5s;
+}

@@ -130,7 +130,13 @@
       <h1>&nbsp;</h1>
       <hr />
       <h1>Management</h1>
-      
+      <div class="algorithm">
+        Method:
+        <select name="method" onchange="setMethod(this.selectedIndex);">
+          <option value="cs">Carle &amp; Strub</option>
+          <option value="zippin">Zippin</option>
+        </select>
+      </div>
       <input type="button" value="Copy to clipboard"
 	         onClick="androidCopy()" />
       
