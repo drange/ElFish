@@ -136,7 +136,7 @@ unitTestCarleStrub(arr,hatNCS);
 
 
 //
-// 3
+// 4
 //
 arr =  [34, 46, 22, 26, 18, 16, 20, 12];
 hatNZ = 268;
@@ -150,6 +150,15 @@ unitTestZippin(arr, hatNZ);
 unitTestNewCatch(arr, hatNZ, p, x);
 unitTestConfidenceInterval(arr, ci);
 unitTestCarleStrub(arr,hatNCS);
+
+
+//
+// 5 zippin collapse
+//
+arr =  [0, 1000];
+// hatNZ = collapses
+hatNCS = 250749;
+unitTestCarleStrub(arr, hatNCS);
 
 
 
